@@ -8,6 +8,7 @@ output: html_document
 ```{r}
 #Import Dataset:
 
-
+data <- read.csv("data/logs_moodle_anon.csv", stringsAsFactors = FALSE)
+  
 ```
 
