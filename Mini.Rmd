@@ -12,3 +12,50 @@ data <- read.csv("data/logs_moodle_anon.csv", stringsAsFactors = FALSE)
 
 ```
 
+###
+
+Análisis Exploratorio
+
+1. El Contexto (El "Por qué")
+
+¿Cuál es el objetivo de negocio o de la investigación?
+ (¿Busco reducir fugas de clientes, predecir ventas o entender un fenómeno social?)
+
+¿Qué significa cada columna (diccionario de datos)?
+No asumas que "id_01" es un identificador único sin confirmar.
+
+¿De dónde vienen los datos?
+(¿Es un volcado directo de SQL, una encuesta manual o datos de sensores?)
+
+
+2. Estructura y Calidad (El "Cómo están")
+
+¿Qué tamaño tiene el dataset? 
+
+¿Qué tipos de datos tengo? ¿Son numéricos, categóricos (etiquetas), fechas o texto libre?
+
+¿Hay datos faltantes (NaNs)?
+
+    ¿Por qué faltan? ¿Fue un error técnico o la ausencia de dato tiene significado (ej. "hijos" vacío podría significar 0)?
+
+¿Existen duplicados?
+
+
+
+3. Análisis Univariante (El "Qué hay")
+
+¿Cómo se distribuyen los datos?
+
+¿Siguen una campana de Gauss o están muy sesgados hacia un lado?
+
+¿Hay valores atípicos (outliers)?
+
+4. Preparación para Modelado (El "Qué sigue")
+
+¿Necesito transformar las variables?
+
+¿Qué variables parecen no aportar nada?
+
+¿Puedo crear nuevas variables?
+
+###
