@@ -16,46 +16,24 @@ data <- read.csv("data/logs_moodle_anon.csv", stringsAsFactors = FALSE)
 
 Análisis Exploratorio
 
-1. El Contexto (El "Por qué")
+1.  ¿Qué relación hay entre el tipo de IP y el horario de acceso al aula virtual?
 
-¿Cuál es el objetivo de negocio o de la investigación?
- (¿Busco reducir fugas de clientes, predecir ventas o entender un fenómeno social?)
+2.  ¿Qué horas del día suelen tener el mayor número de accesos en el transcurso de una hora en el aula virtual?
 
-¿Qué significa cada columna (diccionario de datos)?
-No asumas que "id_01" es un identificador único sin confirmar.
+3.  ¿Qué porcentaje de ingresos fueron a través de dispositivos web, y hay alguna correlación con las horas de acceso?
 
-¿De dónde vienen los datos?
-(¿Es un volcado directo de SQL, una encuesta manual o datos de sensores?)
+4.  ¿Cuál es la proporción de accesos diarios en promedio durante días hábiles en comparación con días de reposo (fines de semana y vacaciones)?
 
+5.  ¿Se observa un crecimiento o decrecimiento en el número de accesos mensuales a lo largo del año académico?
 
-2. Estructura y Calidad (El "Cómo están")
+6.  ¿Cuál de los contextos de evento designados “tarea: …” tiene el mayor número de ingresos y cuál el menor?
 
-¿Qué tamaño tiene el dataset? 
+7.  ¿Basándonos en las horas más tempranas de ingreso al aula virtual, qué tres usuarios anónimos suelen ser los primeros en ver AV por las mañanas (early     birds)?
 
-¿Qué tipos de datos tengo? ¿Son numéricos, categóricos (etiquetas), fechas o texto libre?
+8.  ¿Qué cinco usuarios anónimos compartirían el apodo de night owls por tener los accesos más tardíos en la noche?
 
-¿Hay datos faltantes (NaNs)?
+9.  Si se hiciese una tabla para una vista rápida y comprensión de los datos, ¿qué variables se mantendrían y cuáles más valdría la pena agregar?
 
-    ¿Por qué faltan? ¿Fue un error técnico o la ausencia de dato tiene significado (ej. "hijos" vacío podría significar 0)?
-
-¿Existen duplicados?
-
-
-
-3. Análisis Univariante (El "Qué hay")
-
-¿Cómo se distribuyen los datos?
-
-¿Siguen una campana de Gauss o están muy sesgados hacia un lado?
-
-¿Hay valores atípicos (outliers)?
-
-4. Preparación para Modelado (El "Qué sigue")
-
-¿Necesito transformar las variables?
-
-¿Qué variables parecen no aportar nada?
-
-¿Puedo crear nuevas variables?
+10. ¿?
 
 ###
