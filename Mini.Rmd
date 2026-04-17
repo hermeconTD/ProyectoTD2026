@@ -1,18 +1,21 @@
 ---
 title: "Mini_Proyecto"
-author: "Mohammed Elbourdany Elagha, Hernán Meléndez Contreras, Lucas Matarredona Sempere, Nicolas Beyte"
+author: Mohammed Elbourdany Elagha, Hernán Meléndez Contreras, Lucas Matarredona Sempere,
+  Nicolas Beyte
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  bookdown::html_document2: default
+  bookdown::pdf_document2: default
 lang: es
 header-includes:
-  - \usepackage{graphicx}
-  - \usepackage{fancyhdr}
-  - \usepackage{caption}
-  - \addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
-  - \pagestyle{fancy}
-  - \fancyhf{}
-  - \renewcommand{\headrulewidth}{0.5pt}
-  - \renewcommand{\footrulewidth}{0.4pt}
+- \usepackage{graphicx}
+- \usepackage{fancyhdr}
+- \usepackage{caption}
+- \addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+- \pagestyle{fancy}
+- \fancyhf{}
+- \renewcommand{\headrulewidth}{0.5pt}
+- \renewcommand{\footrulewidth}{0.4pt}
 ---
 
 ```{r}
@@ -72,7 +75,7 @@ knitr::kable(datos,
 
 ```
 
-En la Tabla @ref (tab:tabla-ejemplo) podemos ver los datos recortados en 3 columnas
+En la Tabla \@ref(tab:tabla-ejemplo) podemos ver los datos recortados en 3 columnas
 
 
 ##Figura
@@ -86,5 +89,5 @@ ggplot(data, aes(x = Nombre.completo.del.usuario, y = Componente)) +
 # Figura de ejemplo (no muy bien hecha, pero se entiende el concepto)
 ```
 
-En la Figura @ref(fig:figura-ejemplo) podemos ver un ejemplo mal hecho de una figura
+En la Figura \@ref(fig:figura-ejemplo) podemos ver un ejemplo mal hecho de una figura
 
