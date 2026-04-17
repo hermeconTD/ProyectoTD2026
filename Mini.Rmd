@@ -3,7 +3,28 @@ title: "Mini_Proyecto"
 author: "Mohammed Elbourdany Elagha, Hernán Meléndez Contreras, Lucas Matarredona Sempere, Nicolas Beyte"
 date: "`r Sys.Date()`"
 output: html_document
+lang: es
+header-includes:
+  - \usepackage{graphicx}
+  - \usepackage{fancyhdr}
+  - \usepackage{caption}
+  - \addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \renewcommand{\headrulewidth}{0.5pt}
+  - \renewcommand{\footrulewidth}{0.4pt}
 ---
+
+```{r}
+#Librerías y demás
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(ggplot2)
+library(knitr)
+library(dplyr)
+
+options(OutDec = ",", digits = 2)
+```
+
 
 ```{r}
 #Import Dataset:
@@ -37,3 +58,33 @@ Análisis Exploratorio
 10. ¿?
 
 ###
+
+##Tabla
+```{r tabla-ejemplo}
+datos <- data %>%
+  head(5) %>%
+  select(Hora, Nombre.completo.del.usuario, Contexto.del.evento)
+
+knitr::kable(datos, 
+             caption = "Datos sobre hora y lugar donde se conectan los usuarios", 
+             booktabs = TRUE)
+# Esta tabla es de prueba
+
+```
+
+En la Tabla @ref (tab:tabla-ejemplo) podemos ver los datos recortados en 3 columnas
+
+
+##Figura
+```{r figura-ejemplo, fig.cap="Relación entre usuario y el componente"}
+ggplot(data, aes(x = Nombre.completo.del.usuario, y = Componente)) +
+  geom_point(size = 3, color = "blue") +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(x = "Usuario", y = "componente",
+       title = "Relación usuario-componente") +
+  theme_minimal()
+# Figura de ejemplo (no muy bien hecha, pero se entiende el concepto)
+```
+
+En la Figura @ref(fig:figura-ejemplo) podemos ver un ejemplo mal hecho de una figura
+
