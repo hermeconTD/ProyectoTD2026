@@ -58,7 +58,7 @@ Análisis Exploratorio
 
 9.  Si se hiciese una tabla para una vista rápida y comprensión de los datos, ¿qué variables se mantendrían y cuáles más valdría la pena agregar?
 
-10. ¿Con la informacion de los datos obtenidos se puede identificar si hay algun momento de caida en los servidores?
+10. ¿Con la información de los datos obtenidos se puede identificar si hay algun momento de caida en los servidores?
 
 ###
 
