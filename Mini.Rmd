@@ -31,8 +31,34 @@ options(OutDec = ",", digits = 2)
 
 ```{r}
 #Import Dataset:
+library(tidyr, lubridate, hms)
 
 data <- read.csv("data/logs_moodle_anon.csv", stringsAsFactors = FALSE)
+data <- data %>% separate(Hora, c("Fecha", "Hora"), sep = ",")
+
+data <- data %>% 
+  separate(Hora, c("Fecha", "Hora"), sep = ", ")
+
+
+data$Fecha <- as.Date(data$Fecha, format = "%d/%m/%y")
+
+# 4. Convertir Hora
+# Nota: as.POSIXct le pondrá la fecha de hoy por defecto. 
+# Si solo quieres tiempo, es mejor usar la clase 'hms'
+data$Hora <- as.POSIXct(data$Hora, format = "%H:%M:%S")
+
+# 5. Renombrar (Correcto, R cambia espacios por puntos al importar)
+data <- data %>% 
+  rename(
+    Nom_Usuario     = Nombre.completo.del.usuario,
+    Afectado        = Usuario.afectado,
+    Contexto_Evento = Contexto.del.evento,
+    Evento          = Nombre.evento,
+    IP              = Dirección.IP
+  )
+
+# Verificar
+summary(data)
 
 ```
 
