@@ -51,13 +51,21 @@ clean_data <- clean_data %>%
     Contexto_Evento = Contexto.del.evento,
     Evento          = Nombre.evento,
     IP              = Dirección.IP
+  ) %>%
+  mutate(
+    Componente = as.factor(Componente),
+    Origen     = as.factor(Origen),
+    Evento     = as.factor(Evento),
+    Afectado   = ifelse(is.na(Afectado), "Sin_afectado", Afectado)
   )
 
 clean_data$Componente <- as.factor(clean_data$Componente)
 
-# Verificar
-summary(clean_data)
+clean_data$Origen <- as.factor(clean_data$Origen)
 
+clean_data$Evento <- as.factor(clean_data$Evento)
+
+ 
 ```
 
 ###
@@ -82,6 +90,8 @@ Análisis Exploratorio
 3.  ¿Qué porcentaje de ingresos fueron a través de dispositivos web, y hay alguna correlación con las horas de acceso?
 
 ```{r}
+
+data_c3 <- 
 
 ```
 
