@@ -40,44 +40,75 @@ data <- read.csv("data/logs_moodle_anon.csv", stringsAsFactors = FALSE)
 
 Análisis Exploratorio
 
+
 1.  ¿Qué relación hay entre el tipo de IP y el horario de acceso al aula virtual?
 
+```{r}
+
+```
 
 
 2.  ¿Qué horas del día suelen tener el mayor número de accesos en el transcurso de una hora en el aula virtual?
 
+```{r}
+
+```
 
 
 3.  ¿Qué porcentaje de ingresos fueron a través de dispositivos web, y hay alguna correlación con las horas de acceso?
 
+```{r}
+
+```
 
 
 4.  ¿Cuál es la proporción de accesos diarios en promedio durante días hábiles en comparación con días de reposo (fines de semana y vacaciones)?
 
+```{r}
+
+```
 
 
 5.  ¿Se observa un crecimiento o decrecimiento en el número de accesos mensuales a lo largo del año académico?
 
+```{r}
+
+```
 
 
 6.  ¿Cuál de los contextos de evento designados “tarea: …” tiene el mayor número de ingresos y cuál el menor?
 
+```{r}
+
+```
 
 
 7.  ¿Basándonos en las horas más tempranas de ingreso al aula virtual, qué tres usuarios anónimos suelen ser los primeros en ver AV por las mañanas (early birds)?
 
+```{r}
+
+```
 
 
 8.  ¿Qué cinco usuarios anónimos compartirían el apodo de night owls por tener los accesos más tardíos en la noche?
 
+```{r}
+
+```
 
 
 9.  Si se hiciese una tabla para una vista rápida y comprensión de los datos, ¿qué variables se mantendrían y cuáles más valdría la pena agregar?
 
+```{r}
+
+```
 
 
 10. ¿Con la información de los datos obtenidos se puede identificar si hay algun momento de caida en los servidores?
 
+```{r}
+
+```
 
 
 ###
