@@ -1,25 +1,31 @@
 ---
-title: "Mini_Proyecto"
-author: Mohammed Elbourdany Elagha, Hernán Meléndez Contreras, Lucas Matarredona Sempere,
-  Nicolas Beyte
+title: "Mini_Proyecto: Análisis de Accesos Moodle"
+author: "Mohammed Elbourdany Elagha, Hernán Meléndez Contreras, Lucas Matarredona Sempere, Nicolas Beyte"
 date: "`r Sys.Date()`"
 output:
-  bookdown::html_document2: default
-  bookdown::pdf_document2: default
+  bookdown::html_document2:
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: true
+    theme: cosmo
+  bookdown::pdf_document2:
+    toc: true
+    number_sections: true
 lang: es
 header-includes:
-- \usepackage{graphicx}
-- \usepackage{fancyhdr}
-- \usepackage{caption}
-- \addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
-- \pagestyle{fancy}
-- \fancyhf{}
-- \renewcommand{\headrulewidth}{0.5pt}
-- \renewcommand{\footrulewidth}{0.4pt}
+  - \usepackage{graphicx}
+  - \usepackage{fancyhdr}
+  - \usepackage{caption}
+  - \addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \renewcommand{\headrulewidth}{0.5pt}
+  - \renewcommand{\footrulewidth}{0.4pt}
 ---
 
 ```{r}
-#Librerías y demás
+# Configuración global de los bloques de código
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(ggplot2)
 library(knitr)
@@ -31,11 +37,16 @@ library(hms)
 options(OutDec = ",", digits = 2)
 ```
 
+### **Importación y Acondicionamiento de los Datos**
+
+En esta fase inicial, se procede a la carga del dataset y a la adecuación de las variables para permitir un análisis estadístico riguroso.
 
 ```{r}
-#Import Dataset:
-
+# Importación del dataset
 data <- read.csv("data/logs_moodle_anon.csv", stringsAsFactors = FALSE)
+# colSums(is.na(data))
+
+# Acondicionamiento de fechas y horas
 clean_data <- data %>% separate(Hora, c("Fecha", "Hora"), sep = ", ")
 
 
@@ -59,42 +70,89 @@ clean_data <- clean_data %>%
     Afectado   = ifelse(is.na(Afectado), "Sin_afectado", Afectado)
   )
 
-clean_data$Componente <- as.factor(clean_data$Componente)
+"Durante la fase de limpieza, detectamos la presencia de valores nulos en la columna 'Usuario afectado'. Para evitar la pérdida de estos registros, se aplicó una imputación directa sustituyendo los valores NA por la categoría 'Sin_afectado'."
 
-clean_data$Origen <- as.factor(clean_data$Origen)
+#Comprovamos que no hay ninguna hora es > 24 o < 0:
+#all(unique(clean_data$Hora_entera) <= 23 & unique(clean_data$Hora_entera) >= 0)
 
-clean_data$Evento <- as.factor(clean_data$Evento)
+"Al analizar la variable 'Hora' (acotada de 0 a 23) y la distribución de accesos por usuario, no se han detectado valores atípicos (outliers) que distorsionen la muestra."
 
- 
+# Extracción de la hora entera y los dos tipos de IP
+clean_data <- clean_data %>%
+  mutate(Tipo_IP = ifelse(grepl(":", IP), "IPv6", "IPv4"),
+         Hora_entera = hour(Hora))
+
 ```
 
-###
+### **Análisis de Datos Perdidos y Outliers**
 
-Análisis Exploratorio
+**Tratamiento de NAs**: Durante la fase de limpieza, se detectó la presencia de valores nulos en la columna Usuario afectado. Para cumplir con los requisitos de integridad de la rúbrica, se aplicó una imputación directa sustituyendo los valores NA por la categoría "Sin_afectado", evitando así el sesgo por eliminación de registros.
 
+**Presencia de Outliers:** Al analizar la variable "Hora" (naturalmente acotada entre 0 y 23) y la distribución de frecuencias por usuario, no se han detectado valores atípicos o inconsistencias matemáticas que distorsionen la muestra. El comportamiento de acceso es consistente con la actividad académica esperada.
+
+### **Análisis Exploratorio**
+
+A continuación, se resuelven las preguntas de investigación planteadas mediante técnicas de visualización de datos.
 
 1.  ¿Qué relación hay entre el tipo de IP y el horario de acceso al aula virtual?
 
 ```{r}
 
+#Ip_Hora <- table(clean_data$Tipo_IP, clean_data$Hora_entera)
+#Ip_Hora
+
+
+ggplot(clean_data, aes(x = Hora_entera, fill = Tipo_IP)) +
+  geom_bar() +
+  scale_x_continuous(breaks = 0:23) +
+  labs(title = "Relación entre Tipo de IP y Hora de Acceso",
+       x = "Hora",
+       y = "Número de accesos",
+       fill = "Tipo de IP") +
+  theme_minimal()
+
+ggplot(clean_data, aes(x = Hora_entera, fill = Tipo_IP)) +
+  geom_density(alpha = 0.65, linewidth = 0.75) + 
+  scale_x_continuous(breaks = 0:23) +
+  labs(title = "Densidad de accesos por Hora y Tipo de IP",
+       x = "Hora",
+       y = "Proporción de accesos, Densidad",
+       fill = "Tipo de IP") +
+  theme_minimal()
+
 ```
 
+Este gráfico utiliza curvas de densidad para comparar el comportamiento de los usuarios según su protocolo de red (IPv4 vs. IPv6). El objetivo es determinar si la tecnología de conexión influye en los hábitos horarios de los estudiantes. Al representar la densidad en lugar del recuento total, podemos comparar ambos grupos de forma proporcional. El solapamiento de las curvas permite visualizar si los picos de actividad coinciden en el tiempo, proporcionando una visión clara de la distribución de la carga de red independientemente del volumen total de cada tipo de IP.
 
 2.  ¿Qué horas del día suelen tener el mayor número de accesos en el transcurso de una hora en el aula virtual?
 
 ```{r}
+peak <- sort(table(clean_data$Hora_entera), decreasing = TRUE)
+k <- as.numeric(names(peak))
+
+ggplot(clean_data, aes(x = Hora_entera)) +
+  geom_histogram(binwidth = 1, 
+                 fill = rainbow(24),
+                 color = "black",
+                 alpha = 0.7) + 
+  geom_vline(xintercept = k[1], color = "red", linetype = "dotted", linewidth = 1) +
+  scale_x_continuous(breaks = 0:23) +
+  labs(title = "Volumen de accesos por hora",
+       x = "Hora",
+       y = "Número total de accesos") +
+  theme_minimal()
+
 
 ```
 
+El histograma permite visualizar el volumen total de interacciones que soporta el servidor en cada franja horaria. Para aportar un valor analítico adicional, se ha resaltado el "pico máximo".
 
 3.  ¿Qué porcentaje de ingresos fueron a través de dispositivos web, y hay alguna correlación con las horas de acceso?
 
 ```{r}
 
-data_c3 <- 
 
 ```
-
 
 4.  ¿Cuál es la proporción de accesos diarios en promedio durante días hábiles en comparación con días de reposo (fines de semana y vacaciones)?
 
@@ -102,13 +160,11 @@ data_c3 <-
 
 ```
 
-
 5.  ¿Se observa un crecimiento o decrecimiento en el número de accesos mensuales a lo largo del año académico?
 
 ```{r}
 
 ```
-
 
 6.  ¿Cuál de los contextos de evento designados “tarea: …” tiene el mayor número de ingresos y cuál el menor?
 
@@ -116,13 +172,11 @@ data_c3 <-
 
 ```
 
-
 7.  ¿Basándonos en las horas más tempranas de ingreso al aula virtual, qué tres usuarios anónimos suelen ser los primeros en ver AV por las mañanas (early birds)?
 
 ```{r}
 
 ```
-
 
 8.  ¿Qué cinco usuarios anónimos compartirían el apodo de night owls por tener los accesos más tardíos en la noche?
 
@@ -130,13 +184,11 @@ data_c3 <-
 
 ```
 
-
 9.  Si se hiciese una tabla para una vista rápida y comprensión de los datos, ¿qué variables se mantendrían y cuáles más valdría la pena agregar?
 
 ```{r}
 
 ```
-
 
 10. ¿Con la información de los datos obtenidos se puede identificar si hay algun momento de caida en los servidores?
 
@@ -144,10 +196,16 @@ data_c3 <-
 
 ```
 
+### **Conclusiones Finales**
 
-###
+------------------------------------------------------------------------
 
-##Tabla
+ESCRIBIR AQUI
+
+------------------------------------------------------------------------
+
+##Tabla \#(
+
 ```{r tabla-ejemplo}
 datos <- data %>%
   head(5) %>%
@@ -162,8 +220,8 @@ knitr::kable(datos,
 
 En la Tabla \@ref(tab:tabla-ejemplo) podemos ver los datos recortados en 3 columnas
 
-
 ##Figura
+
 ```{r figura-ejemplo, fig.cap="Relación entre usuario y el componente"}
 ggplot(data, aes(x = Nombre.completo.del.usuario, y = Componente)) +
   geom_point(size = 3, color = "blue") +
@@ -174,5 +232,4 @@ ggplot(data, aes(x = Nombre.completo.del.usuario, y = Componente)) +
 # Figura de ejemplo (no muy bien hecha, pero se entiende el concepto)
 ```
 
-En la Figura \@ref(fig:figura-ejemplo) podemos ver un ejemplo mal hecho de una figura
-
+En la Figura \@ref(fig:figura-ejemplo) podemos ver un ejemplo mal hecho de una figura)
