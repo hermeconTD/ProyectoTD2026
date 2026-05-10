@@ -96,7 +96,7 @@ A continuación, se resuelven las preguntas de investigación planteadas mediant
 
 1.  ¿Qué relación hay entre el tipo de IP y el horario de acceso al aula virtual?
 
-```{r}
+```{r grafico-ip-barras, fig.cap="Distribución total de accesos por hora según tipo de IP"}
 
 #Ip_Hora <- table(clean_data$Tipo_IP, clean_data$Hora_entera)
 #Ip_Hora
@@ -110,6 +110,10 @@ ggplot(clean_data, aes(x = Hora_entera, fill = Tipo_IP)) +
        y = "Número de accesos",
        fill = "Tipo de IP") +
   theme_minimal()
+```
+
+
+```{rgrafico-ip-densidad, fig.cap="Densidad de probabilidad de accesos por protocolo de red"}
 
 ggplot(clean_data, aes(x = Hora_entera, fill = Tipo_IP)) +
   geom_density(alpha = 0.65, linewidth = 0.75) + 
@@ -126,7 +130,7 @@ Este gráfico utiliza curvas de densidad para comparar el comportamiento de los 
 
 2.  ¿Qué horas del día suelen tener el mayor número de accesos en el transcurso de una hora en el aula virtual?
 
-```{r}
+```{r grafico-pico-accesos, fig.cap="Volumen de interacciones horarias con indicación del pico máximo"}
 peak <- sort(table(clean_data$Hora_entera), decreasing = TRUE)
 k <- as.numeric(names(peak))
 
