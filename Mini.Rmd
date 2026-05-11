@@ -96,7 +96,7 @@ A continuación, se resuelven las preguntas de investigación planteadas mediant
 
 1.  ¿Qué relación hay entre el tipo de IP y el horario de acceso al aula virtual?
 
-```{r grafico-ip-barras, fig.cap="Distribución total de accesos por hora según tipo de IP"}
+```{r grafico-ip-barras, fig.cap="Relación entre Tipo de IP y Hora de Acceso"}
 
 #Ip_Hora <- table(clean_data$Tipo_IP, clean_data$Hora_entera)
 #Ip_Hora
@@ -112,8 +112,9 @@ ggplot(clean_data, aes(x = Hora_entera, fill = Tipo_IP)) +
   theme_minimal()
 ```
 
+Este gráfico, detallado en la Figura \@ref(fig:grafico-ip-barras), permite comparar el número de accesos según la IP de cada usuario.
 
-```{rgrafico-ip-densidad, fig.cap="Densidad de probabilidad de accesos por protocolo de red"}
+```{r grafico-ip-densidad, fig.cap="Densidad de accesos por Hora y Tipo de IP"}
 
 ggplot(clean_data, aes(x = Hora_entera, fill = Tipo_IP)) +
   geom_density(alpha = 0.65, linewidth = 0.75) + 
@@ -126,11 +127,13 @@ ggplot(clean_data, aes(x = Hora_entera, fill = Tipo_IP)) +
 
 ```
 
-Este gráfico utiliza curvas de densidad para comparar el comportamiento de los usuarios según su protocolo de red (IPv4 vs. IPv6). El objetivo es determinar si la tecnología de conexión influye en los hábitos horarios de los estudiantes. Al representar la densidad en lugar del recuento total, podemos comparar ambos grupos de forma proporcional. El solapamiento de las curvas permite visualizar si los picos de actividad coinciden en el tiempo, proporcionando una visión clara de la distribución de la carga de red independientemente del volumen total de cada tipo de IP.
+Este gráfico de densidad, detallado en la Figura \@ref(fig:grafico-ip-densidad), permite comparar el comportamiento de los usuarios de forma proporcional. El solapamiento de las curvas indica que el tipo de conexión no influye en los hábitos horarios.
+
+Al representar la densidad en lugar del Figura \@ref(fig:grafico-ip-barras), podemos comparar ambos grupos de forma proporcional. El solapamiento de las curvas permite visualizar si los picos de actividad coinciden en el tiempo, proporcionando una visión clara según cada tipo de IP.
 
 2.  ¿Qué horas del día suelen tener el mayor número de accesos en el transcurso de una hora en el aula virtual?
 
-```{r grafico-pico-accesos, fig.cap="Volumen de interacciones horarias con indicación del pico máximo"}
+```{r grafico-pico-accesos, fig.cap="Volumen de accesos por hora"}
 peak <- sort(table(clean_data$Hora_entera), decreasing = TRUE)
 k <- as.numeric(names(peak))
 
@@ -149,7 +152,7 @@ ggplot(clean_data, aes(x = Hora_entera)) +
 
 ```
 
-El histograma permite visualizar el volumen total de interacciones que soporta el servidor en cada franja horaria. Para aportar un valor analítico adicional, se ha resaltado el "pico máximo".
+En la Figura \@ref(fig:grafico-pico-accesos) se identifica el volumen total de interacciones que soporta el servidor en cada franja horaria. Para aportar un valor analítico adicional, se ha resaltado el "pico máximo".
 
 3.  ¿Qué porcentaje de ingresos fueron a través de dispositivos web, y hay alguna correlación con las horas de acceso?
 
