@@ -334,14 +334,70 @@ La Figura \@ref(fig:grafico-night-owls) identifica a los cinco usuarios con acti
 9.  Si se hiciese una tabla para una vista rápida y comprensión de los datos, ¿qué variables se mantendrían y cuáles más valdría la pena agregar?
 
 ```{r}
+vista_rapida <- clean_data %>%
+  select(
+    Fecha,
+    Hora,
+    Nom_Usuario,
+    Evento,
+    Contexto_Evento,
+    Componente,
+    Origen,
+    Tipo_IP,
+    Hora_entera
+  ) %>%
+  head(10)
+
+knitr::kable(
+  vista_rapida,
+  caption = "Variables seleccionadas para una vista rápida del comportamiento de acceso",
+  booktabs = TRUE
+)
 
 ```
+
+Para hacer una tabla que permita entender los datos de forma rápida, se han escogido las variables más útiles para el análisis.
+
+Las variables Fecha y Hora sirven para ver cuándo se producen los accesos, mientras que Nom_Usuario permite analizar el comportamiento de cada usuario. Además, variables como Evento, Contexto_Evento y Componente ayudan a entender qué acciones realizan los usuarios dentro de Moodle.
+
+Por otro lado, Tipo_IP y Origen permiten estudiar desde qué tipo de conexión o acceso entran los usuarios. También se ha incluido la variable Hora_entera, ya que facilita mucho los análisis y gráficas relacionadas con las horas de acceso.
+
+Además, sería interesante añadir nuevas variables como:
+
+Día de la semana.
+Si el acceso fue en fin de semana o no.
+Número de accesos por usuario.
+Tiempo entre accesos consecutivos.
+
+Estas variables permitirían hacer análisis más completos sobre los hábitos de uso del aula virtual.
 
 10. ¿Con la información de los datos obtenidos se puede identificar si hay algun momento de caida en los servidores?
 
 ```{r}
 
+accesos_diarios <- clean_data %>%
+  group_by(Fecha) %>%
+  summarise(
+    Total_accesos = n()
+  )
+
+ggplot(accesos_diarios, aes(x = Fecha, y = Total_accesos)) +
+  geom_line(linewidth = 0.8, color = "steelblue") +
+  geom_point(size = 1.5, color = "darkblue") +
+  labs(
+    title = "Distribución diaria de accesos al aula virtual",
+    x = "Fecha",
+    y = "Número de accesos"
+  ) +
+  theme_minimal()
+
 ```
+
+Para comprobar si hubo posibles caídas o problemas en los servidores del aula virtual, se analizó cómo cambia el número de accesos diarios a lo largo del tiempo.
+
+Con el gráfico se pueden detectar bajadas muy grandes en la actividad, ya que eso podría indicar algún fallo o interrupción del servicio. Normalmente, es normal que haya diferencias entre días de clase, fines de semana o periodos con menos actividad académica.
+
+Después de analizar los datos, no se observan señales claras de caídas importantes en los servidores. Los cambios que aparecen en el número de accesos parecen deberse principalmente al uso habitual de los estudiantes y al calendario académico.
 
 ### **Conclusiones Finales**
 
