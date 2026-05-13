@@ -1,6 +1,6 @@
 ---
 title: "Mini_Proyecto: Análisis de Accesos Moodle"
-author: "Mohammed Elbourdany Elagha, Hernán Meléndez Contreras, Lucas Matarredona Sempere, Nicolas Beyte"
+author: "Mohammed Elbourdany Elagha, Hernán Meléndez Contreras, Lucas Matarredona Sempere, Nicolas Beyte, Paula Sasot"
 date: "`r Sys.Date()`"
 output:
   bookdown::pdf_document2:
