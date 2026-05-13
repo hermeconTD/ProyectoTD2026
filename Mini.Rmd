@@ -94,7 +94,7 @@ clean_data <- clean_data %>%
 
 A continuación, se resuelven las preguntas de investigación planteadas mediante técnicas de visualización de datos.
 
-1.  ¿Qué relación hay entre el tipo de IP y el horario de acceso al aula virtual?
+#### 1. ¿Qué relación hay entre el tipo de IP y el horario de acceso al aula virtual?
 
 ```{r grafico-ip-barras, fig.cap="Relación entre Tipo de IP y Hora de Acceso"}
 
@@ -131,7 +131,7 @@ Este gráfico de densidad, detallado en la Figura \@ref(fig:grafico-ip-densidad)
 
 Al representar la densidad en lugar del Figura \@ref(fig:grafico-ip-barras), podemos comparar ambos grupos de forma proporcional. El solapamiento de las curvas permite visualizar si los picos de actividad coinciden en el tiempo, proporcionando una visión clara según cada tipo de IP.
 
-2.  ¿Qué horas del día suelen tener el mayor número de accesos en el transcurso de una hora en el aula virtual?
+#### 2. ¿Qué horas del día suelen tener el mayor número de accesos en el transcurso de una hora en el aula virtual?
 
 ```{r grafico-pico-accesos, fig.cap="Volumen de accesos por hora"}
 peak <- sort(table(clean_data$Hora_entera), decreasing = TRUE)
@@ -154,7 +154,7 @@ ggplot(clean_data, aes(x = Hora_entera)) +
 
 En la Figura \@ref(fig:grafico-pico-accesos) se identifica el volumen total de interacciones que soporta el servidor en cada franja horaria. Para aportar un valor analítico adicional, se ha resaltado el "pico máximo".
 
-3.  ¿Qué porcentaje de ingresos fueron a través de dispositivos web, y hay alguna correlación con las horas de acceso?
+#### 3. ¿Qué porcentaje de ingresos fueron a través de dispositivos web, y hay alguna correlación con las horas de acceso?
 
 ```{r tabla-pct-origen}
 pct_web <- clean_data %>%
@@ -165,7 +165,6 @@ knitr::kable(pct_web,
              col.names = c("Origen", "Accesos", "Porcentaje (%)"),
              caption = "Distribución porcentual de accesos según origen del dispositivo")
 ```
-
 
 ```{r grafico-web-hora, fig.cap="Promedio diario de accesos por hora según origen del dispositivo"}
 clean_data %>%
@@ -183,10 +182,9 @@ clean_data %>%
   theme_minimal()
 ```
 
-Como se aprecia en la Tabla \@ref(tab:tabla-pct-origen), más del 95% de los accesos al aula virtual se realizan desde navegador web, lo que tiene bastante sentido dado el contexto académico.
-Sin embargo, la Figura \@ref(fig:grafico-web-hora) es donde se pone interesante, ya que cada origen sigue un patrón claro. En los accesos web durante la jornada estudiantil de mañana se ve el mayor pico, distribuido a lo largo de ese rango horario con su punto más alto a las 9h, cuando recién comienzan las clases. Si además miramos los accesos cli, se pueden distinguir dos picos: uno entre las 8h y las 9h, coincidiendo con el horario típico de desplazamiento entre semana, accesos desde el móvil de camino a clase o al trabajo, y otro entre la 1h y las 2h de la madrugada, que muy probablemente corresponde a estudiantes revisando el aula desde la cama antes de dormir. Por último, aunque el origen restore sea bastante menor, también muestra un patrón propio: un pico a las 9h que apunta a actividad del profesorado al inicio de la jornada, subida de contenidos, actualización de calificaciones,  y un segundo repunte alrededor de las 20h, que sugiere una segunda ventana de gestión al final del día.
+Como se aprecia en la Tabla \@ref(tab:tabla-pct-origen), más del 95% de los accesos al aula virtual se realizan desde navegador web, lo que tiene bastante sentido dado el contexto académico. Sin embargo, la Figura \@ref(fig:grafico-web-hora) es donde se pone interesante, ya que cada origen sigue un patrón claro. En los accesos web durante la jornada estudiantil de mañana se ve el mayor pico, distribuido a lo largo de ese rango horario con su punto más alto a las 9h, cuando recién comienzan las clases. Si además miramos los accesos cli, se pueden distinguir dos picos: uno entre las 8h y las 9h, coincidiendo con el horario típico de desplazamiento entre semana, accesos desde el móvil de camino a clase o al trabajo, y otro entre la 1h y las 2h de la madrugada, que muy probablemente corresponde a estudiantes revisando el aula desde la cama antes de dormir. Por último, aunque el origen restore sea bastante menor, también muestra un patrón propio: un pico a las 9h que apunta a actividad del profesorado al inicio de la jornada, subida de contenidos, actualización de calificaciones, y un segundo repunte alrededor de las 20h, que sugiere una segunda ventana de gestión al final del día.
 
-4.  ¿Cuál es la proporción de accesos diarios en promedio durante días hábiles en comparación con días de reposo (fines de semana y vacaciones)?
+#### 4. ¿Cuál es la proporción de accesos diarios en promedio durante días hábiles en comparación con días de reposo (fines de semana y vacaciones)?
 
 ```{r tabla-accesos-dias}
 festivos_sueltos <- as.Date(c("2024-10-09", "2024-11-01", "2024-12-06",
@@ -254,11 +252,9 @@ ggplot(horas_tipo, aes(x = Hora_entera, y = Promedio_accesos, fill = Tipo_Dia)) 
   theme_minimal()
 ```
 
-
 Por último, la Figura \@ref(fig:grafico-horas-tipo) nos enseña a qué hora nos conectamos según el día. Si lo comparamos con la gráfica de dispositivos de la pregunta 3 (Figura \@ref(fig:grafico-web-hora)), vemos que el pico tan grande de accesos a las 9:00h de la mañana solo ocurre en los días hábiles ya que es justo la hora a la que se entra a clase. En los fines de semana y vacaciones, esa "rutina mañanera" desaparece por completo y las conexiones se reparten de una forma mucho más uniforme a lo largo del día.
 
-
-5.  ¿Se observa un crecimiento o decrecimiento en el número de accesos mensuales a lo largo del año académico?
+#### 5. ¿Se observa un crecimiento o decrecimiento en el número de accesos mensuales a lo largo del año académico?
 
 ```{r}
 accesos_mensuales <- clean_data %>%
@@ -285,7 +281,7 @@ A partir de esta agregación, se ha representado la evolución del número total
 
 El análisis permite observar si existe un patrón de crecimiento en la actividad del aula virtual, así como posibles variaciones asociadas a periodos académicos concretos como inicio de curso, periodos de evaluación o vacaciones.
 
-6.  ¿Cuál de los contextos de evento designados “tarea: …” tiene el mayor número de ingresos y cuál el menor?
+#### 6. ¿Cuál de los contextos de evento designados “tarea: …” tiene el mayor número de ingresos y cuál el menor?
 
 ```{r}
 tareas <- clean_data %>%
@@ -357,15 +353,46 @@ La representación gráfica resultante, presentada en formato horizontal para me
 
 En conjunto, este análisis permite identificar de forma rápida qué actividades del aula virtual concentran mayor participación del alumnado y cuáles presentan una menor interacción, facilitando la interpretación global del comportamiento en este tipo de eventos.
 
-7.  ¿Basándonos en las horas más tempranas de ingreso al aula virtual, qué tres usuarios anónimos suelen ser los primeros en ver AV por las mañanas (early birds)?
+#### 7. ¿Basándonos en las horas más tempranas de ingreso al aula virtual, qué tres usuarios anónimos suelen ser los primeros en ver AV por las mañanas (early birds)?
 
-```{r}
+```{r tabla-early-birds}
+primeros_del_dia <- clean_data %>%
+  filter(Hora_entera >= 4 & Hora_entera <= 8) %>% 
+  group_by(Fecha) %>%
+  slice_min(Hora, n = 1, with_ties = FALSE) %>%    
+  ungroup()
 
+top_early_birds <- primeros_del_dia %>%
+  count(Nom_Usuario, name = "Dias_Siendo_Primero") %>%
+  arrange(desc(Dias_Siendo_Primero)) %>%
+  head(3)
+
+knitr::kable(top_early_birds, 
+             col.names = c("Usuario", "Días siendo el primero"),
+             caption = "Top 3 usuarios que acceden más temprano al Aula Virtual", 
+             booktabs = TRUE)
 ```
 
+Para encontrar a los verdaderos "early birds" (los más madrugadores), hemos filtrado los datos para quedarnos solo con los accesos entre las 4:00h y las 8:00h de la mañana. Como se puede ver en la Tabla \@ref(tab:tabla-early-birds), hemos sacado el top 3 de los usuarios que más veces han conseguido ser los primeros en abrir el aula virtual cada día.
 
+```{r grafico-early-birds, fig.cap="Hábitos horarios de los 3 usuarios más madrugadores"}
+habitos_early <- clean_data %>%
+  filter(Nom_Usuario %in% top_early_birds$Nom_Usuario,
+         Hora_entera >= 4 & Hora_entera <= 8)
 
-8.  ¿Qué cinco usuarios anónimos compartirían el apodo de night owls por tener los accesos más tardíos en la noche?
+ggplot(habitos_early, aes(x = Nom_Usuario, y = as.numeric(Hora)/3600, fill = Nom_Usuario)) +
+  geom_boxplot(alpha = 0.7) +
+  scale_y_continuous(breaks = 4:8, labels = paste0(4:8, ":00h")) +
+  labs(title = "Distribución de la hora de conexión de los Early Birds",
+       x = "Usuario",
+       y = "Hora de acceso (Mañana)") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+Sin embargo, para entender bien cómo se comportan, hemos hecho el diagrama de cajas de la Figura \@ref(fig:grafico-early-birds). Este gráfico nos muestra a qué hora suelen entrar y la variación que tienen. De esta manera, podemos diferenciar fácilmente si alguien entra todos los días en una hora en específico o si su horario cambia dependiendo del día.
+
+#### 8. ¿Qué cinco usuarios anónimos compartirían el apodo de night owls por tener los accesos más tardíos en la noche?
 
 ```{r grafico-night-owls, fig.cap="Distribución de accesos nocturnos de los cinco usuarios más tardíos"}
 
@@ -394,7 +421,7 @@ clean_data %>%
 
 La Figura \@ref(fig:grafico-night-owls) identifica a los cinco usuarios con actividad más tardía en el aula virtual, considerando el tráfico entre las 22:00h y las 3:00h. El ranking combina la hora máxima registrada con el volumen acumulado de accesos en esa franja, lo que lo hace más robusto frente a entradas puntuales y aisladas. El eje se reordenó de forma cronológica (22h → 3h) para reflejar la continuidad real de la noche y no romper visualmente la medianoche. Dicho esto, los mayores night owls del aula son U0072, destacando especialmente a las 23h donde casi triplica al siguiente, seguido de U0001, U0036, U0007 y U0087 con una presencia nocturna más moderada.
 
-9.  Si se hiciese una tabla para una vista rápida y comprensión de los datos, ¿qué variables se mantendrían y cuáles más valdría la pena agregar?
+#### 9. Si se hiciese una tabla para una vista rápida y comprensión de los datos, ¿qué variables se mantendrían y cuáles más valdría la pena agregar?
 
 ```{r tabla-variables-relevantes}
 vista_rapida <- clean_data %>%
@@ -429,15 +456,11 @@ Por otro lado, Tipo_IP y Origen permiten estudiar desde qué tipo de conexión o
 
 Además, sería interesante añadir nuevas variables como:
 
-Día de la semana.
-Si el acceso fue en fin de semana o no.
-Número de accesos por usuario.
-Tiempo entre accesos consecutivos.
+Día de la semana. Si el acceso fue en fin de semana o no. Número de accesos por usuario. Tiempo entre accesos consecutivos.
 
 Estas variables permitirían hacer análisis más completos sobre los hábitos de uso del aula virtual.
 
-10. ¿Con la información de los datos obtenidos se puede identificar si hay algun momento de caida en los servidores?
-
+#### 10. ¿Con la información de los datos obtenidos se puede identificar si hay algun momento de caida en los servidores?
 
 ```{r grafico-caidas-servidor, fig.cap="(#fig:caidas-servidor) Distribución temporal de accesos diarios para la detección de posibles caídas"}
 
@@ -473,32 +496,4 @@ ESCRIBIR AQUI
 
 ------------------------------------------------------------------------
 
-##Tabla \#(
 
-```{r tabla-ejemplo}
-datos <- data %>%
-  head(5) %>%
-  select(Hora, Nombre.completo.del.usuario, Contexto.del.evento)
-
-knitr::kable(datos, 
-             caption = "Datos sobre hora y lugar donde se conectan los usuarios", 
-             booktabs = TRUE)
-# Esta tabla es de prueba
-
-```
-
-En la Tabla \@ref(tab:tabla-ejemplo) podemos ver los datos recortados en 3 columnas
-
-##Figura
-
-```{r figura-ejemplo, fig.cap="Relación entre usuario y el componente"}
-ggplot(data, aes(x = Nombre.completo.del.usuario, y = Componente)) +
-  geom_point(size = 3, color = "blue") +
-  geom_smooth(method = "lm", color = "red", se = FALSE) +
-  labs(x = "Usuario", y = "componente",
-       title = "Relación usuario-componente") +
-  theme_minimal()
-# Figura de ejemplo (no muy bien hecha, pero se entiende el concepto)
-```
-
-En la Figura \@ref(fig:figura-ejemplo) podemos ver un ejemplo mal hecho de una figura)
