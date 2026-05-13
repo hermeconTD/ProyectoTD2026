@@ -195,8 +195,28 @@ Sin embargo, la Figura \@ref(fig:grafico-web-hora) es donde se pone interesante,
 5.  ¿Se observa un crecimiento o decrecimiento en el número de accesos mensuales a lo largo del año académico?
 
 ```{r}
+accesos_mensuales <- clean_data %>%
+  mutate(Mes = format(Fecha, "%Y-%m")) %>%
+  group_by(Mes) %>%
+  summarise(Accesos = n(), .groups = "drop") %>%
+  arrange(Mes)
 
+ggplot(accesos_mensuales, aes(x = Mes, y = Accesos, group = 1)) +
+  geom_line(color = "steelblue", linewidth = 1) +
+  geom_point(color = "black", size = 2) +
+  labs(
+    title = "Evolución mensual de accesos al aula virtual",
+    x = "Mes",
+    y = "Número de accesos"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+Para analizar la evolución temporal del uso del aula virtual, se ha agregado el número de accesos por mes a lo largo del año académico. Para ello, se ha transformado la variable de fecha original extrayendo el mes y el año de cada registro, lo que permite agrupar la actividad en intervalos temporales mensuales.
+
+A partir de esta agregación, se ha representado la evolución del número total de accesos mediante un gráfico de líneas, lo que facilita la identificación de tendencias a lo largo del tiempo.
+
+El análisis permite observar si existe un patrón de crecimiento en la actividad del aula virtual, así como posibles variaciones asociadas a periodos académicos concretos como inicio de curso, periodos de evaluación o vacaciones.
 
 6.  ¿Cuál de los contextos de evento designados “tarea: …” tiene el mayor número de ingresos y cuál el menor?
 
