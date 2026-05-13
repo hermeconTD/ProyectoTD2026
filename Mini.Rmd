@@ -396,7 +396,7 @@ La Figura \@ref(fig:grafico-night-owls) identifica a los cinco usuarios con acti
 
 9.  Si se hiciese una tabla para una vista rápida y comprensión de los datos, ¿qué variables se mantendrían y cuáles más valdría la pena agregar?
 
-```{r}
+```{r tabla-variables-relevantes}
 vista_rapida <- clean_data %>%
   select(
     Fecha,
@@ -413,9 +413,11 @@ vista_rapida <- clean_data %>%
 
 knitr::kable(
   vista_rapida,
-  caption = "Variables seleccionadas para una vista rápida del comportamiento de acceso",
+  caption = " Variables seleccionadas para una vista rápida del comportamiento de acceso",
   booktabs = TRUE
 )
+
+
 
 ```
 
@@ -436,7 +438,8 @@ Estas variables permitirían hacer análisis más completos sobre los hábitos d
 
 10. ¿Con la información de los datos obtenidos se puede identificar si hay algun momento de caida en los servidores?
 
-```{r}
+
+```{r grafico-caidas-servidor, fig.cap="(#fig:caidas-servidor) Distribución temporal de accesos diarios para la detección de posibles caídas"}
 
 accesos_diarios <- clean_data %>%
   group_by(Fecha) %>%
