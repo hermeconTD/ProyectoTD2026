@@ -202,8 +202,8 @@ accesos_mensuales <- clean_data %>%
   arrange(Mes)
 
 ggplot(accesos_mensuales, aes(x = Mes, y = Accesos, group = 1)) +
-  geom_line(color = "steelblue", linewidth = 1) +
-  geom_point(color = "black", size = 2) +
+  geom_line(color = "lightblue3", linewidth = 1) +
+  geom_point(color = "salmon", size = 3) +
   labs(
     title = "Evolución mensual de accesos al aula virtual",
     x = "Mes",
@@ -293,55 +293,7 @@ En conjunto, este análisis permite identificar de forma rápida qué actividade
 7.  ¿Basándonos en las horas más tempranas de ingreso al aula virtual, qué tres usuarios anónimos suelen ser los primeros en ver AV por las mañanas (early birds)?
 
 ```{r}
-early_users <- clean_data %>%
-  group_by(Nom_Usuario) %>%
-  summarise(
-    Primera_hora = min(Hora_entera),
-    .groups = "drop"
-  ) %>%
-  filter(Primera_hora >= 3 & Primera_hora <= 7)
-ggplot(early_users, aes(x = Nom_Usuario, y = Primera_hora)) +
-  geom_point(size = 4, color = "steelblue") +
-  labs(
-    title = "Usuarios con primer acceso entre 3:00 y 7:00",
-    x = "Usuario",
-    y = "Hora del primer acceso"
-  ) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  )
 
-top3_after3 <- clean_data %>%
-  group_by(Nom_Usuario) %>%
-  summarise(
-    Primera_hora = min(Hora_entera),
-    Accesos_totales = n(),
-    .groups = "drop"
-  ) %>%
-  filter(Primera_hora >= 3) %>%
-  arrange(Primera_hora) %>%
-  slice_head(n = 3)
-
-ggplot(top3_after3, aes(x = Nom_Usuario, y = Accesos_totales)) +
-  geom_col(fill = "steelblue") +
-  geom_text(
-    aes(
-      y = Accesos_totales * 0.6,
-      label = paste0(Primera_hora, ":00h")
-    ),
-    color = "black",
-    fontface = "bold"
-  ) +
-  labs(
-    title = "Top 3 usuarios que comienzan después de las 3h",
-    x = "Usuario",
-    y = "Número total de accesos (día completo)"
-  ) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  )
 ```
 
 Se ha analizado el comportamiento de los usuarios en las primeras horas del día, considerando únicamente aquellos cuyo primer acceso al aula virtual se produce entre las 3:00 y las 7:00 de la mañana.
