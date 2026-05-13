@@ -3,15 +3,15 @@ title: "Mini_Proyecto: Análisis de Accesos Moodle"
 author: "Mohammed Elbourdany Elagha, Hernán Meléndez Contreras, Lucas Matarredona Sempere, Nicolas Beyte, Paula Sasot"
 date: "`r Sys.Date()`"
 output:
-  bookdown::pdf_document2:
-    toc: true
-    number_sections: true
   bookdown::html_document2:
     toc: true
     toc_float: true
     toc_depth: 2
     number_sections: true
     theme: cosmo
+  bookdown::pdf_document2:
+    toc: true
+    number_sections: true
 lang: es
 header-includes:
   - \usepackage{graphicx}
@@ -188,9 +188,75 @@ Sin embargo, la Figura \@ref(fig:grafico-web-hora) es donde se pone interesante,
 
 4.  ¿Cuál es la proporción de accesos diarios en promedio durante días hábiles en comparación con días de reposo (fines de semana y vacaciones)?
 
-```{r}
+```{r tabla-accesos-dias}
+festivos_sueltos <- as.Date(c("2024-10-09", "2024-11-01", "2024-12-06",
+                              "2025-05-01", "2025-10-09", "2025-11-01", "2025-12-06", 
+                              "2026-05-01"))
 
+pascua_25 <- seq(as.Date("2025-04-17"), as.Date("2025-04-28"), by = "days")
+pascua_26 <- seq(as.Date("2026-04-02"), as.Date("2026-04-13"), by = "days")
+dias_pascua <- c(pascua_25, pascua_26)
+
+clean_data <- clean_data %>%
+  mutate(
+    Mes = month(Fecha),
+    Dia = day(Fecha),
+    es_finde = wday(Fecha, week_start = 1) > 5,
+    es_verano = Mes %in% c(7, 8) | (Mes == 6 & Dia >= 21) | (Mes == 9 & Dia <= 10),
+    es_navidad = (Mes == 12 & Dia >= 23) | (Mes == 1 & Dia <= 6),
+    es_fallas = Mes == 3 & Dia %in% 15:20,        
+    es_pascua = Fecha %in% dias_pascua,
+    es_festivo = Fecha %in% festivos_sueltos,
+    Tipo_Dia = ifelse(es_finde | es_verano | es_navidad | es_fallas | es_pascua | es_festivo, "Reposo", "Hábil")
+  )
+
+accesos_diarios <- clean_data %>%
+  group_by(Fecha, Tipo_Dia) %>%
+  summarise(Accesos = n(), .groups = "drop")
+
+promedio_tipo <- accesos_diarios %>%
+  group_by(Tipo_Dia) %>%
+  summarise(Promedio_Accesos = round(mean(Accesos), 2))
+
+knitr::kable(promedio_tipo, 
+             caption = "Promedio de accesos diarios en días lectivos frente a periodos de reposo", 
+             booktabs = TRUE)
 ```
+
+Como podemos ver en la Tabla \@ref(tab:tabla-accesos-dias), es evidente que la media de accesos es mucho mayor en los días hábiles que en los días de reposo. Esto, mayoritariamente, se debe a que los días que hay clase se suele entrar más al aula virtual.
+
+```{r grafico-accesos-dias, fig.cap="Distribución y dispersión de los accesos diarios"}
+ggplot(accesos_diarios, aes(x = Tipo_Dia, y = Accesos, fill = Tipo_Dia)) +
+  geom_boxplot(alpha = 0.7) +
+  labs(title = "Distribución de accesos diarios (Hábil vs Reposo)",
+       x = "Tipo de Día",
+       y = "Cantidad de accesos por día") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+Sin embargo, el diagrama de cajas de la Figura \@ref(fig:grafico-accesos-dias) nos muestra un detalle interesante: hay varios puntos sueltos (outliers) en la columna de días de reposo. Esto puede significar que hay festivos concretos con muchísima actividad, siendo lo más probable el profesor modificando cosas o los alumnos estudiando justo antes de una entrega o examen.
+
+```{r grafico-horas-tipo, fig.cap="Promedio diario de accesos por hora según el tipo de día"}
+horas_tipo <- clean_data %>%
+  group_by(Fecha, Hora_entera, Tipo_Dia) %>%
+  summarise(Accesos = n(), .groups = "drop") %>%
+  group_by(Hora_entera, Tipo_Dia) %>%
+  summarise(Promedio_accesos = mean(Accesos), .groups = "drop") 
+
+ggplot(horas_tipo, aes(x = Hora_entera, y = Promedio_accesos, fill = Tipo_Dia)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_x_continuous(breaks = 0:23) +
+  labs(title = "Promedio diario de accesos por hora y tipo de día",
+       x = "Hora",
+       y = "Promedio de accesos por día",
+       fill = "Tipo de Día") +
+  theme_minimal()
+```
+
+
+Por último, la Figura \@ref(fig:grafico-horas-tipo) nos enseña a qué hora nos conectamos según el día. Si lo comparamos con la gráfica de dispositivos de la pregunta 3 (Figura \@ref(fig:grafico-web-hora)), vemos que el pico tan grande de accesos a las 9:00h de la mañana solo ocurre en los días hábiles ya que es justo la hora a la que se entra a clase. En los fines de semana y vacaciones, esa "rutina mañanera" desaparece por completo y las conexiones se reparten de una forma mucho más uniforme a lo largo del día.
+
 
 5.  ¿Se observa un crecimiento o decrecimiento en el número de accesos mensuales a lo largo del año académico?
 
@@ -212,6 +278,7 @@ ggplot(accesos_mensuales, aes(x = Mes, y = Accesos, group = 1)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
 Para analizar la evolución temporal del uso del aula virtual, se ha agregado el número de accesos por mes a lo largo del año académico. Para ello, se ha transformado la variable de fecha original extrayendo el mes y el año de cada registro, lo que permite agrupar la actividad en intervalos temporales mensuales.
 
 A partir de esta agregación, se ha representado la evolución del número total de accesos mediante un gráfico de líneas, lo que facilita la identificación de tendencias a lo largo del tiempo.
@@ -296,11 +363,7 @@ En conjunto, este análisis permite identificar de forma rápida qué actividade
 
 ```
 
-Se ha analizado el comportamiento de los usuarios en las primeras horas del día, considerando únicamente aquellos cuyo primer acceso al aula virtual se produce entre las 3:00 y las 7:00 de la mañana.
 
-En primer lugar, se ha filtrado el conjunto de datos para identificar a los usuarios cuya primera actividad registrada se encuentra dentro de esta franja horaria, permitiendo obtener una visión global de los “early users” del sistema.
-
-Posteriormente, dentro de este grupo, se han seleccionado los tres usuarios con el acceso más temprano, ordenándolos según su número total de accesos a lo largo del día. El gráfico final permite visualizar claramente tanto la hora exacta del primer acceso como la comparación entre los usuarios más madrugadores.
 
 8.  ¿Qué cinco usuarios anónimos compartirían el apodo de night owls por tener los accesos más tardíos en la noche?
 
