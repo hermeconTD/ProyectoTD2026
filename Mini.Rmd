@@ -3,15 +3,15 @@ title: "Mini_Proyecto: Análisis de Accesos Moodle"
 author: "Mohammed Elbourdany Elagha, Hernán Meléndez Contreras, Lucas Matarredona Sempere, Nicolas Beyte, Paula Sasot"
 date: "`r Sys.Date()`"
 output:
-  bookdown::pdf_document2:
-    toc: true
-    number_sections: true
   bookdown::html_document2:
     toc: true
     toc_float: true
     toc_depth: 2
     number_sections: true
     theme: cosmo
+  bookdown::pdf_document2:
+    toc: true
+    number_sections: true
 lang: es
 header-includes:
   - \usepackage{graphicx}
@@ -201,14 +201,98 @@ Sin embargo, la Figura \@ref(fig:grafico-web-hora) es donde se pone interesante,
 6.  ¿Cuál de los contextos de evento designados “tarea: …” tiene el mayor número de ingresos y cuál el menor?
 
 ```{r}
+tareas <- clean_data %>%
+  filter(grepl("tarea", Contexto_Evento, ignore.case = TRUE)) %>%
+  count(Contexto_Evento, sort = TRUE) %>%
+  mutate(
+    Tarea_id = paste("T ", row_number()),
+    categoria = case_when(
+      n == max(n) ~ "Maximo",
+      n == min(n) ~ "Minimo",
+      n < quantile(n, 0.33) ~ "Bajo",
+      n < quantile(n, 0.66) ~ "Medio",
+      TRUE ~ "Alto"
+    )
+  )
 
+tareas$categoria <- factor(
+  tareas$categoria,
+  levels = c("Maximo","Alto","Medio", "Bajo", "Minimo")
+)
+
+ggplot(tareas, aes(x = reorder(Tarea_id, n), y = n, fill = categoria)) +
+  geom_col() +
+  coord_flip() +
+  scale_fill_manual(values = c(
+    "Minimo" = "green3",
+    "Bajo" = "yellow",
+    "Medio" = "orange",
+    "Alto" = "darkorange",
+    "Maximo" = "red"
+  )) +
+  labs(
+    title = "Accesos por contexto de tarea (ordenado por nivel)",
+    x = "Tareas",
+    y = "Número de accesos",
+    fill = "Nivel de acceso"
+  ) +
+  theme_minimal()
+
+tareas_extremas <- tareas %>%
+  filter(n == max(n) | n == min(n))
+
+ggplot(tareas_extremas, aes(x = reorder(Contexto_Evento, n), y = n, fill = categoria)) + geom_col() +
+  geom_text(aes(label = n), hjust = -0.2) +
+  scale_fill_manual(values = c(
+    "Minimo" = "green3",
+    "Maximo" = "red"
+  )) +
+  labs(
+    title = "Comparación entre tarea más y menos accedida",
+    x = "Tarea",
+    y = "Número de accesos"
+  ) +
+  theme_minimal()+
+  theme(
+    axis.text.x = element_text(angle = 20, hjust = 1)
+  )
 ```
+
+Para mejorar la visualización, se han anonimizado los nombres de las tareas utilizando identificadores tipo Tarea 1, Tarea 2, etc.
+Posteriormente, se ha representado el número de accesos por tarea, destacando en rojo la más accedida y en verde la menos accedida.
+Además, se han extraído explícitamente ambas para su interpretación directa..
 
 7.  ¿Basándonos en las horas más tempranas de ingreso al aula virtual, qué tres usuarios anónimos suelen ser los primeros en ver AV por las mañanas (early birds)?
 
 ```{r}
+early_birds <- clean_data %>%
+  filter(Hora_entera >= 6 & Hora_entera <= 8) %>%
+  group_by(Nom_Usuario) %>%
+  summarise(
+    Accesos = n(),
+    Primera_hora = min(Hora_entera)
+  ) %>%
+  arrange(Primera_hora, desc(Accesos)) %>%
+  slice_head(n = 3)
 
+ggplot(early_birds, aes(x = reorder(Nom_Usuario, Accesos), y = Accesos)) +
+  geom_bar(stat = "identity", fill = "darkorange") +
+  coord_flip() +
+  labs(title = "Top 3 Early Birds (usuarios madrugadores)",
+       x = "Usuario",
+       y = "Accesos tempranos (6–8h)") +
+  theme_minimal()
+
+ggplot(early_birds, aes(x = Nom_Usuario, y = Primera_hora)) +
+  geom_point(size = 4, color = "blue") +
+  geom_text(aes(label = Accesos), vjust = -1) +
+  labs(title = "Primer acceso de los Early Birds",
+       x = "Usuario",
+       y = "Hora del primer acceso") +
+  theme_minimal()
 ```
+
+Seleccionamos los accesos entre las 6 y las 8 de la mañana para identificar los usuarios más madrugadores. El gráfico muestra los tres usuarios con mayor actividad en esta franja, destacando tanto su volumen de accesos como su comportamiento temprano.
 
 8.  ¿Qué cinco usuarios anónimos compartirían el apodo de night owls por tener los accesos más tardíos en la noche?
 
