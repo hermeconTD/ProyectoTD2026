@@ -240,10 +240,14 @@ ggplot(tareas, aes(x = reorder(Tarea_id, n), y = n, fill = categoria)) +
 
 tareas_extremas <- tareas %>%
   filter(n == max(n) | n == min(n))
+```
 
-ggplot(tareas_extremas, aes(x = reorder(Contexto_Evento, n), y = n, fill = categoria)) + geom_col() +
-  geom_text(aes(label = n), hjust = -0.2) +
-  scale_fill_manual(values = c(
+```{r, fig.width=10, fig.height=5}
+ggplot(tareas_extremas, aes(x = reorder(Contexto_Evento, n), y = n, color = categoria)) +
+  geom_point(size = 5) +
+  geom_segment(aes(xend = Contexto_Evento, y = 0, yend = n)) +
+  coord_flip() +
+  scale_color_manual(values = c(
     "Minimo" = "green3",
     "Maximo" = "red"
   )) +
@@ -252,47 +256,79 @@ ggplot(tareas_extremas, aes(x = reorder(Contexto_Evento, n), y = n, fill = categ
     x = "Tarea",
     y = "Número de accesos"
   ) +
-  theme_minimal()+
-  theme(
-    axis.text.x = element_text(angle = 20, hjust = 1)
-  )
+  theme_minimal() +
+  theme(legend.position = "none")
 ```
 
-Para mejorar la visualización, se han anonimizado los nombres de las tareas utilizando identificadores tipo Tarea 1, Tarea 2, etc.
-Posteriormente, se ha representado el número de accesos por tarea, destacando en rojo la más accedida y en verde la menos accedida.
-Además, se han extraído explícitamente ambas para su interpretación directa..
+Para analizar qué contextos de tipo “tarea” generan mayor y menor interacción en el aula virtual, se ha filtrado el conjunto de datos original seleccionando únicamente aquellos registros cuyo contexto del evento contiene la palabra “tarea”.
+
+A partir de este subconjunto, se ha calculado el número total de accesos asociados a cada tarea, obteniendo una distribución de frecuencias que permite identificar las diferencias de uso entre actividades. Con el objetivo de facilitar la interpretación y mejorar la visualización, los nombres originales de las tareas han sido anonimizados mediante identificadores genéricos.
+
+Posteriormente, se han identificado la tarea con mayor número de accesos y la tarea con menor número de accesos, con el fin de analizar los extremos de comportamiento dentro de este tipo de eventos. Este enfoque permite simplificar la comparación y centrar el análisis en los casos más representativos de alta y baja interacción.
+
+La representación gráfica resultante, presentada en formato horizontal para mejorar la legibilidad de los nombres largos, permite comparar de forma directa ambos extremos, destacando de manera clara la diferencia en el nivel de uso entre la tarea más y la menos accedida.
+
+En conjunto, este análisis permite identificar de forma rápida qué actividades del aula virtual concentran mayor participación del alumnado y cuáles presentan una menor interacción, facilitando la interpretación global del comportamiento en este tipo de eventos.
 
 7.  ¿Basándonos en las horas más tempranas de ingreso al aula virtual, qué tres usuarios anónimos suelen ser los primeros en ver AV por las mañanas (early birds)?
 
 ```{r}
-early_birds <- clean_data %>%
-  filter(Hora_entera >= 6 & Hora_entera <= 8) %>%
+early_users <- clean_data %>%
   group_by(Nom_Usuario) %>%
   summarise(
-    Accesos = n(),
-    Primera_hora = min(Hora_entera)
+    Primera_hora = min(Hora_entera),
+    .groups = "drop"
   ) %>%
-  arrange(Primera_hora, desc(Accesos)) %>%
+  filter(Primera_hora >= 3 & Primera_hora <= 7)
+ggplot(early_users, aes(x = Nom_Usuario, y = Primera_hora)) +
+  geom_point(size = 4, color = "steelblue") +
+  labs(
+    title = "Usuarios con primer acceso entre 3:00 y 7:00",
+    x = "Usuario",
+    y = "Hora del primer acceso"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+top3_after3 <- clean_data %>%
+  group_by(Nom_Usuario) %>%
+  summarise(
+    Primera_hora = min(Hora_entera),
+    Accesos_totales = n(),
+    .groups = "drop"
+  ) %>%
+  filter(Primera_hora >= 3) %>%
+  arrange(Primera_hora) %>%
   slice_head(n = 3)
 
-ggplot(early_birds, aes(x = reorder(Nom_Usuario, Accesos), y = Accesos)) +
-  geom_bar(stat = "identity", fill = "darkorange") +
-  coord_flip() +
-  labs(title = "Top 3 Early Birds (usuarios madrugadores)",
-       x = "Usuario",
-       y = "Accesos tempranos (6–8h)") +
-  theme_minimal()
-
-ggplot(early_birds, aes(x = Nom_Usuario, y = Primera_hora)) +
-  geom_point(size = 4, color = "blue") +
-  geom_text(aes(label = Accesos), vjust = -1) +
-  labs(title = "Primer acceso de los Early Birds",
-       x = "Usuario",
-       y = "Hora del primer acceso") +
-  theme_minimal()
+ggplot(top3_after3, aes(x = Nom_Usuario, y = Accesos_totales)) +
+  geom_col(fill = "steelblue") +
+  geom_text(
+    aes(
+      y = Accesos_totales * 0.6,
+      label = paste0(Primera_hora, ":00h")
+    ),
+    color = "black",
+    fontface = "bold"
+  ) +
+  labs(
+    title = "Top 3 usuarios que comienzan después de las 3h",
+    x = "Usuario",
+    y = "Número total de accesos (día completo)"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
 ```
 
-Seleccionamos los accesos entre las 6 y las 8 de la mañana para identificar los usuarios más madrugadores. El gráfico muestra los tres usuarios con mayor actividad en esta franja, destacando tanto su volumen de accesos como su comportamiento temprano.
+Se ha analizado el comportamiento de los usuarios en las primeras horas del día, considerando únicamente aquellos cuyo primer acceso al aula virtual se produce entre las 3:00 y las 7:00 de la mañana.
+
+En primer lugar, se ha filtrado el conjunto de datos para identificar a los usuarios cuya primera actividad registrada se encuentra dentro de esta franja horaria, permitiendo obtener una visión global de los “early users” del sistema.
+
+Posteriormente, dentro de este grupo, se han seleccionado los tres usuarios con el acceso más temprano, ordenándolos según su número total de accesos a lo largo del día. El gráfico final permite visualizar claramente tanto la hora exacta del primer acceso como la comparación entre los usuarios más madrugadores.
 
 8.  ¿Qué cinco usuarios anónimos compartirían el apodo de night owls por tener los accesos más tardíos en la noche?
 
