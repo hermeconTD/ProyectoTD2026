@@ -492,14 +492,16 @@ Después de analizar los datos, no se observan señales claras de caídas import
 
 ------------------------------------------------------------------------
 
-Observando lo realizado, hemos podido contemplar una variedad de información a partir de los datos. Entre ello, las horas de más acceso, gente que entra muy pronto o muy tarde, que tipos de datos nos son útiles para hacer un anárisis e incluso saber si ha podido caer el servidor alguna vez.
+Observando lo realizado, hemos podido contemplar una variedad de información a partir de los datos. Entre ello, las horas de mayor acceso, gente que entra muy pronto o muy tarde, que tipos de datos nos son útiles para hacer un análisis e incluso saber si ha podido caer el servidor en algun momento.
 
 Hablando de las horas de acceso, hemos comprobado que la hora punta son las 9 de la mañana siempre que los días sean hábiles y desde el navegador web. A parte, hemos visto sobre que meses hay más actividad, viendo que suele ser en el periodo del segundo cuatrimestre.
 
-Después podíamos encontrar a otras personas que solían ser muy madrugadores o muy trasnochadores. Entre ellos se puede suponer que puede haber alguno que pueda ser el profesor modificando alguna cosa para la clase siguiente.
+Después pudiamos catalogar a personas que solían ser muy madrugadores o muy trasnochadores. Entre ellos se puede suponer que puede haber alguno que pueda ser el profesor modificando alguna cosa para la clase siguiente.
 
-Los datos han sido buenos aún teniendo que modificar alguna cosa. Sin embargo hubiese sido útil tener alguna información de más como el día de la semana.
+Los datos han sido buenos aún teniendo que modificar una que otra cosa. Sin embargo hubiese sido útil tener alguna información de más como el día de la semana.
 
 Por último, podemos observar que aunque parezcan que hayan caídas en el sistema, se puede deber al uso de cada usuario.
+
+En definitiva como podemos ver el mundo de los datos incluso con un conjunto de datos tan pequeño como este da muchas posibilidades de exploracion para el cual solo llegamos a explorar la punta del iceberg.
 
 ------------------------------------------------------------------------
