@@ -394,6 +394,23 @@ Sin embargo, para entender bien cómo se comportan, hemos hecho el diagrama de c
 
 #### 8. ¿Qué cinco usuarios anónimos compartirían el apodo de night owls por tener los accesos más tardíos en la noche?
 
+```{r tabla-night-owls}
+
+clean_data %>%
+  filter((Hora_entera >= 22 | Hora_entera <= 3),
+         Nom_Usuario %in% night_owls$Nom_Usuario) %>%
+  mutate(Hora_noche = factor(Hora_entera,
+                             levels = c(22, 23, 0, 1, 2, 3),
+                             labels = c("22h", "23h", "0h", "1h", "2h", "3h"))) %>%
+  count(Nom_Usuario, Hora_noche) %>%
+  pivot_wider(names_from = Hora_noche, values_from = n, values_fill = 0) %>%
+  rename(Usuario = Nom_Usuario) %>%
+  arrange(Usuario) %>%
+  knitr::kable(caption = "Accesos nocturnos por usuario y hora — Top 5 Night Owls",
+               booktabs = TRUE)
+```
+
+
 ```{r grafico-night-owls, fig.cap="Distribución de accesos nocturnos de los cinco usuarios más tardíos"}
 
 night_owls <- clean_data %>%
@@ -419,7 +436,7 @@ clean_data %>%
   theme_minimal()
 ```
 
-La Figura \@ref(fig:grafico-night-owls) identifica a los cinco usuarios con actividad más tardía en el aula virtual, considerando el tráfico entre las 22:00h y las 3:00h. El ranking combina la hora máxima registrada con el volumen acumulado de accesos en esa franja, lo que lo hace más robusto frente a entradas puntuales y aisladas. El eje se reordenó de forma cronológica (22h → 3h) para reflejar la continuidad real de la noche y no romper visualmente la medianoche. Dicho esto, los mayores night owls del aula son U0072, destacando especialmente a las 23h donde casi triplica al siguiente, seguido de U0001, U0036, U0007 y U0087 con una presencia nocturna más moderada.
+La Figura \@ref(fig:grafico-night-owls) identifica a los cinco usuarios con actividad más tardía en el aula virtual, considerando el tráfico entre las 22:00h y las 3:00h. El ranking combina la hora máxima registrada con el volumen acumulado de accesos en esa franja, lo que lo hace más robusto frente a entradas puntuales y aisladas. El eje se reordenó de forma cronológica (22h → 3h) para reflejar la continuidad real de la noche y no romper visualmente la medianoche. Dicho esto, los mayores night owls del aula son U0072, destacando especialmente a las 23h donde casi triplica al siguiente, seguido de U0001, U0036, U0007 y U0087 con una presencia nocturna más moderada, detalle que puede apreciarse fácilmente en la Tabla \@ref(tab:tabla-night-owls).
 
 #### 9. Si se hiciese una tabla para una vista rápida y comprensión de los datos, ¿qué variables se mantendrían y cuáles más valdría la pena agregar?
 
