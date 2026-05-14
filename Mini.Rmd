@@ -426,7 +426,9 @@ clean_data %>%
          Nom_Usuario %in% night_owls$Nom_Usuario) %>%
   mutate(Hora_noche = factor(Hora_entera,
                              levels = c(22, 23, 0, 1, 2, 3),
-                             labels = c("22h", "23h", "0h", "1h", "2h", "3h"))) %>%
+                             labels = c("22h", "23h", "0h", "1h", "2h", "3h")),
+         Nom_Usuario = factor(Nom_Usuario,
+                              levels = night_owls$Nom_Usuario)) %>%
   count(Nom_Usuario, Hora_noche) %>%
   pivot_wider(names_from = Hora_noche, values_from = n, values_fill = 0) %>%
   rename(Usuario = Nom_Usuario) %>%
