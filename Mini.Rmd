@@ -3,15 +3,16 @@ title: "Mini_Proyecto: Análisis de Accesos al AulaVirtual"
 author: "Mohammed Elbourdany Elagha, Hernán Meléndez Contreras, Lucas Matarredona Sempere, Nicolas Beyte, Paula Sasot García"
 date: "`r Sys.Date()`"
 output:
+  bookdown::pdf_document2:
+    latex_engine: xelatex
+    toc: true
+    number_sections: true
   bookdown::html_document2:
     toc: true
     toc_float: true
     toc_depth: 2
     number_sections: true
     theme: cosmo
-  bookdown::pdf_document2:
-    toc: true
-    number_sections: true
 lang: es
 header-includes:
   - \usepackage{graphicx}
