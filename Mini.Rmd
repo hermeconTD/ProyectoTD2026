@@ -1,19 +1,23 @@
 ---
-title: "Mini_Proyecto: Análisis de Accesos al AulaVirtual"
+title: "Mini_Proyecto: Análisis de Accesos al Aula Virtual"
 author: "Mohammed Elbourdany Elagha, Hernán Meléndez Contreras, Lucas Matarredona Sempere, Nicolas Beyte, Paula Sasot García"
 date: "`r Sys.Date()`"
+
 output:
   bookdown::pdf_document2:
     latex_engine: xelatex
     toc: true
+    toc_depth: 3
     number_sections: true
   bookdown::html_document2:
     toc: true
     toc_float: true
-    toc_depth: 2
+    toc_depth: 3
     number_sections: true
     theme: cosmo
+
 lang: es
+
 header-includes:
   - \usepackage{graphicx}
   - \usepackage{fancyhdr}
@@ -24,7 +28,6 @@ header-includes:
   - \renewcommand{\headrulewidth}{0.5pt}
   - \renewcommand{\footrulewidth}{0.4pt}
 ---
-
 ------------------------------------------------------------------------
 
 # **Introducción**
@@ -37,37 +40,6 @@ En definitiva, un trabajo para ayudar a entender mejor cómo interactua el alumn
 
 ------------------------------------------------------------------------
 
-# **Índice**
-
-1. [Importación y Acondicionamiento de los Datos](#importación-y-acondicionamiento-de-los-datos)
-
-2. [Análisis de Datos Perdidos y Outliers](#análisis-de-datos-perdidos-y-outliers)
-
-3. [Análisis Exploratorio](#análisis-exploratorio)
-
-   3.1. [¿Qué relación hay entre el tipo de IP y el horario de acceso al aula virtual?](#1-qué-relación-hay-entre-el-tipo-de-ip-y-el-horario-de-acceso-al-aula-virtual)
-
-   3.2. [¿Qué horas del día suelen tener el mayor número de accesos en el transcurso de una hora en el aula virtual?](#2-qué-horas-del-día-suelen-tener-el-mayor-número-de-accesos-en-el-transcurso-de-una-hora-en-el-aula-virtual)
-
-   3.3. [¿Qué porcentaje de ingresos fueron a través de dispositivos web, y hay alguna correlación con las horas de acceso?](#3-qué-porcentaje-de-ingresos-fueron-a-través-de-dispositivos-web-y-hay-alguna-correlación-con-las-horas-de-acceso)
-
-   3.4. [¿Cuál es la proporción de accesos diarios en promedio durante días hábiles en comparación con días de reposo?](#4-cuál-es-la-proporción-de-accesos-diarios-en-promedio-durante-días-hábiles-en-comparación-con-días-de-reposo-fines-de-semana-y-vacaciones)
-
-   3.5. [¿Se observa un crecimiento o decrecimiento en el número de accesos mensuales?](#5-se-observa-un-crecimiento-o-decrecimiento-en-el-número-de-accesos-mensuales-a-lo-largo-del-año-académico)
-
-   3.6. [¿Qué contexto de “tarea” tiene más y menos accesos?](#6-cuál-de-los-contextos-de-evento-designados-tarea--tiene-el-mayor-número-de-ingresos-y-cuál-el-menor)
-
-   3.7. [Usuarios “early birds”](#7-basándonos-en-las-horas-más-tempranas-de-ingreso-al-aula-virtual-qué-tres-usuarios-anónimos-suelen-ser-los-primeros-en-ver-av-por-las-mañanas-early-birds)
-
-   3.8. [Usuarios “night owls”](#8-qué-cinco-usuarios-anónimos-compartirían-el-apodo-de-night-owls-por-tener-los-accesos-más-tardíos-en-la-noche)
-
-   3.9. [Variables útiles para una vista rápida](#9-si-se-hiciese-una-tabla-para-una-vista-rápida-y-comprensión-de-los-datos-qué-variables-se-mantendrían-y-cuáles-más-valdría-la-pena-agregar)
-
-   3.10. [Detección de posibles caídas del servidor](#10-con-la-información-de-los-datos-obtenidos-se-puede-identificar-si-hay-algun-momento-de-caida-en-los-servidores)
-
-4. [Conclusiones Finales](#conclusiones-finales)
-
-------------------------------------------------------------------------
 
 **Configuración global de los bloques de código**
 ```{r}
@@ -406,7 +378,7 @@ ggplot(tareas_extremas, aes(x = reorder(Contexto_Evento, n), y = n, color = cate
 
 La figura \@ref(fig:grafico-varita), muestra la gran diferéncia entre la tarea de más acceso y aquellas con menor acceso. Otro punto a destacar de la figura, es que no existe sólo una tarea de mínimo acceso, sino que hay varias que comparten el puesto, todas ellas tienen un numero de accesos total de 2, frente a la del máximo acceso, que tiene por encima de los 2000. Aquí hemos dejado de discretizar los nombres para poder ver claramente ccuál es cuál.
 
-Por lo tanto, nos da a conocer que la tarea con mayor número de accesos es El Examen de TD de Lab de la 1ra convocatoria 2025. y las de menor acceso: El marathon de Tidyverse, Los dos examenes de laboratorio de la convocatoria de 2023, el ejercicio del tema 5 sobre exploración de un datasety la Tarea de clase de la sessión dos.
+Por lo tanto, nos da a conocer que la tarea con mayor número de accesos es El Examen de TD de Lab de la 1ra convocatoria 2025. y las de menor acceso: El marathon de Tidyverse, Los dos examenes de laboratorio de la convocatoria de 2023, el ejercicio del tema 5 sobre exploración de un dataset y la Tarea de clase de la sessión dos.
 
 ### ¿Basándonos en las horas más tempranas de ingreso al aula virtual, qué tres usuarios anónimos suelen ser los primeros en ver AV por las mañanas (early birds)?
 
@@ -544,7 +516,7 @@ accesos_diarios <- clean_data %>%
   )
 
 ggplot(accesos_diarios, aes(x = Fecha, y = Total_accesos)) +
-  geom_line(linewidth = 0.8, color = "steelblue") +
+  geom_line(linewidth = 0.8, color = "lightblue") +
   geom_point(size = 1.5, color = "darkblue") +
   labs(
     title = "Distribución diaria de accesos al aula virtual",
