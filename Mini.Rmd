@@ -42,7 +42,7 @@ En definitiva, un trabajo para ayudar a entender mejor cómo interactua el alumn
 
 
 **Configuración global de los bloques de código**
-```{r}
+```{r, include = FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 if (!require("pacman", quietly = TRUE)) {
@@ -102,12 +102,15 @@ clean_data <- clean_data %>%
     Afectado   = ifelse(is.na(Afectado), "Sin_afectado", Afectado)
   )
 
-"Durante la fase de limpieza, detectamos la presencia de valores nulos en la columna 'Usuario afectado'. Para evitar la pérdida de estos registros, se aplicó una imputación directa sustituyendo los valores NA por la categoría 'Sin_afectado'."
+# Durante la fase de limpieza, detectamos la presencia de valores nulos en la columna 'Usuario afectado'. Para evitar la pérdida de estos registros, se aplicó una imputación directa sustituyendo los valores NA por la categoría 'Sin_afectado'.
+
 
 #Comprovamos que no hay ninguna hora es > 24 o < 0:
 #all(unique(clean_data$Hora_entera) <= 23 & unique(clean_data$Hora_entera) >= 0)
 
-"Al analizar la variable 'Hora' (acotada de 0 a 23) y la distribución de accesos por usuario, no se han detectado valores atípicos (outliers) que distorsionen la muestra."
+
+# Al analizar la variable 'Hora' (acotada de 0 a 23) y la distribución de accesos por usuario, no se han detectado valores atípicos (outliers) que distorsionen la muestra.
+
 
 # Extracción de la hora entera y los dos tipos de IP
 clean_data <- clean_data %>%
@@ -118,9 +121,16 @@ clean_data <- clean_data %>%
 
 ## **Análisis de Datos Perdidos y Outliers**
 
-**Tratamiento de NAs**: Durante la fase de limpieza, se detectó la presencia de valores nulos en la columna Usuario afectado. Para cumplir con los requisitos de integridad de la rúbrica, se aplicó una imputación directa sustituyendo los valores NA por la categoría "Sin_afectado", evitando así el sesgo por eliminación de registros.
+*Tratamiento de NAs*: Durante la fase de limpieza, se detectó la presencia
+de valores nulos en la columna Usuario afectado. Para cumplir con los
+requisitos de integridad de la rúbrica, se aplicó una imputación directa
+sustituyendo los valores NA por la categoría "Sin_afectado", evitando así el
+sesgo por eliminación de registros.
 
-**Presencia de Outliers:** Al analizar la variable "Hora" (naturalmente acotada entre 0 y 23) y la distribución de frecuencias por usuario, no se han detectado valores atípicos o inconsistencias matemáticas que distorsionen la muestra. El comportamiento de acceso es consistente con la actividad académica esperada.
+*Presencia de Outliers:* Al analizar la variable "Hora" (naturalmente acotada
+entre 0 y 23) y la distribución de frecuencias por usuario, no se han detectado
+valores atípicos o inconsistencias matemáticas que distorsionen la muestra. El
+comportamiento de acceso es consistente con la actividad académica esperada.
 
 ## **Análisis Exploratorio**
 
@@ -128,7 +138,7 @@ A continuación, se resuelven las preguntas de investigación planteadas mediant
 
 ### ¿Qué relación hay entre el tipo de IP y el horario de acceso al aula virtual?
 
-```{r grafico-ip-barras, fig.cap="Relación entre Tipo de IP y Hora de Acceso", fig.height=3}
+```{r grafico-ip-barras, fig.cap="Relación entre Tipo de IP y Hora de Acceso", fig.height=2}
 
 #Ip_Hora <- table(clean_data$Tipo_IP, clean_data$Hora_entera)
 #Ip_Hora
@@ -146,7 +156,7 @@ ggplot(clean_data, aes(x = Hora_entera, fill = Tipo_IP)) +
 
 Este gráfico, detallado en la Figura \@ref(fig:grafico-ip-barras), permite comparar el número de accesos según la IP de cada usuario.
 
-```{r grafico-ip-densidad, fig.cap="Densidad de accesos por Hora y Tipo de IP", fig.height=3}
+```{r grafico-ip-densidad, fig.cap="Densidad de accesos por Hora y Tipo de IP", fig.height=2}
 
 ggplot(clean_data, aes(x = Hora_entera, fill = Tipo_IP)) +
   geom_density(alpha = 0.65, linewidth = 0.75) + 
@@ -165,7 +175,7 @@ Al representar la densidad en lugar del Figura \@ref(fig:grafico-ip-barras), pod
 
 ### ¿Qué horas del día suelen tener el mayor número de accesos en el transcurso de una hora en el aula virtual?
 
-```{r grafico-pico-accesos, fig.cap="Volumen de accesos por hora", fig.height=3}
+```{r grafico-pico-accesos, fig.cap="Volumen de accesos por hora", fig.height=2}
 peak <- sort(table(clean_data$Hora_entera), decreasing = TRUE)
 k <- as.numeric(names(peak))
 
@@ -198,7 +208,7 @@ knitr::kable(pct_web,
              caption = "Distribución porcentual de accesos según origen del dispositivo")
 ```
 
-```{r grafico-web-hora, fig.cap="Promedio diario de accesos por hora según origen del dispositivo", fig.height=3}
+```{r grafico-web-hora, fig.cap="Promedio diario de accesos por hora según origen del dispositivo", fig.height=2}
 clean_data %>%
   group_by(Fecha, Hora_entera, Origen) %>%
   summarise(Accesos = n(), .groups = "drop") %>%
@@ -267,7 +277,7 @@ ggplot(accesos_diarios, aes(x = Tipo_Dia, y = Accesos, fill = Tipo_Dia)) +
 
 Sin embargo, el diagrama de cajas de la Figura \@ref(fig:grafico-accesos-dias) nos muestra un detalle interesante: hay varios puntos sueltos (outliers) en la columna de días de reposo. Esto puede significar que hay festivos concretos con muchísima actividad, siendo lo más probable el profesor modificando cosas o los alumnos estudiando justo antes de una entrega o examen.
 
-```{r grafico-horas-tipo, fig.cap="Promedio diario de accesos por hora según el tipo de día", fig.height=3}
+```{r grafico-horas-tipo, fig.cap="Promedio diario de accesos por hora según el tipo de día", fig.height=2}
 horas_tipo <- clean_data %>%
   group_by(Fecha, Hora_entera, Tipo_Dia) %>%
   summarise(Accesos = n(), .groups = "drop") %>%
@@ -288,7 +298,7 @@ Por último, la Figura \@ref(fig:grafico-horas-tipo) nos enseña a qué hora nos
 
 ### ¿Se observa un crecimiento o decrecimiento en el número de accesos mensuales a lo largo del año académico?
 
-```{r grafico-cosa, fig.cap="Evolución mensual de accesos", fig.height=3}
+```{r grafico-cosa, fig.cap="Evolución mensual de accesos", fig.height=2}
 accesos_mensuales <- clean_data %>%
   mutate(Mes = format(Fecha, "%Y-%m")) %>%
   group_by(Mes) %>%
@@ -358,7 +368,7 @@ Con ayuda de la figura \@ref(fig:grafico-naranja), se puede ver con claridad el 
 
 Para poder verse de forma más clara, el grafico ha sido coloreado según 5 colores; rojo y azul, máximo y mínimo respectivamente, naranja aquellas tareas que estén por encima del percentil 66%, verde aquellas que estén por debajo del 33% y amarillas el resto.
 
-```{r grafico-varita, fig.cap="Tarea más y menos accedida", fig.height=3, fig.width=10}
+```{r grafico-varita, fig.cap="Tarea más y menos accedida", fig.height=2, fig.width=10}
 ggplot(tareas_extremas, aes(x = reorder(Contexto_Evento, n), y = n, color = categoria)) +
   geom_point(size = 5) +
   geom_segment(aes(xend = Contexto_Evento, y = 0, yend = n)) +
@@ -421,7 +431,7 @@ Sin embargo, para entender bien cómo se comportan, hemos hecho el diagrama de c
 
 ### ¿Qué cinco usuarios anónimos compartirían el apodo de night owls por tener los accesos más tardíos en la noche?
 
-```{r grafico-night-owls, fig.cap="Distribución de accesos nocturnos de los cinco usuarios más tardíos", fig.height=3}
+```{r grafico-night-owls, fig.cap="Distribución de accesos nocturnos de los cinco usuarios más tardíos", fig.height=2}
 
 night_owls <- clean_data %>%
   filter(Hora_entera >= 22 | Hora_entera <= 3) %>%
