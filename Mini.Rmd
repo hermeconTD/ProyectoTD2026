@@ -1,6 +1,6 @@
 ---
 title: "Mini_Proyecto: Análisis de Accesos al Aula Virtual"
-author: "Mohammed Elbourdany Elagha, Hernán Meléndez Contreras, Lucas Matarredona Sempere, Nicolas Beyte, Paula Sasot García"
+author: "Mohammed Elbourdany Elagha, Hernán Meléndez Contreras, \\ Lucas Matarredona Sempere, Nicolas Beyte, Paula Sasot García"
 date: "`r Sys.Date()`"
 
 output:
@@ -497,7 +497,7 @@ knitr::kable(
   vista_rapida,
   caption = " Variables seleccionadas para una vista rápida del comportamiento de acceso",
   booktabs = TRUE
-)
+) %>% kable_styling(latex_options = c("hold_position", "scale_down"))
 
 
 
