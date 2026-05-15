@@ -1,9 +1,11 @@
 ---
-title: "Mini_Proyecto: Análisis de Accesos Moodle"
-author: "Mohammed Elbourdany Elagha, Hernán Meléndez Contreras, Lucas Matarredona Sempere, Nicolas Beyte, Paula Sasot"
+title: "Mini_Proyecto: Análisis de Accesos al Aula Virtual"
+author: "Mohammed Elbourdany Elagha, Hernán Meléndez Contreras, Lucas Matarredona Sempere, Nicolas Beyte, Paula Sasot García"
 date: "`r Sys.Date()`"
+
 output:
   bookdown::pdf_document2:
+    latex_engine: xelatex
     toc: true
     toc_depth: 3
     number_sections: true
@@ -13,9 +15,10 @@ output:
     toc_depth: 3
     number_sections: true
     theme: cosmo
+
 lang: es
+
 header-includes:
-  - \usepackage[spanish]{babel}
   - \usepackage{graphicx}
   - \usepackage{fancyhdr}
   - \usepackage{caption}
@@ -41,12 +44,20 @@ En definitiva, un trabajo para ayudar a entender mejor cómo interactua el alumn
 **Configuración global de los bloques de código**
 ```{r}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
-library(ggplot2)
-library(knitr)
-library(dplyr)
-library(tidyr)
-library(lubridate)
-library(hms)
+
+if (!require("pacman", quietly = TRUE)) {
+  install.packages("pacman", repos = "https://cloud.r-project.org")
+}
+library(pacman)
+
+p_load(
+  ggplot2,
+  knitr,
+  dplyr,
+  tidyr,
+  lubridate,
+  hms
+)
 
 options(OutDec = ",", digits = 2)
 ```
@@ -112,7 +123,7 @@ A continuación, se resuelven las preguntas de investigación planteadas mediant
 
 ### ¿Qué relación hay entre el tipo de IP y el horario de acceso al aula virtual?
 
-```{r grafico-ip-barras, fig.cap="Relación entre Tipo de IP y Hora de Acceso"}
+```{r grafico-ip-barras, fig.cap="Relación entre Tipo de IP y Hora de Acceso", fig.height=4}
 
 #Ip_Hora <- table(clean_data$Tipo_IP, clean_data$Hora_entera)
 #Ip_Hora
@@ -130,7 +141,7 @@ ggplot(clean_data, aes(x = Hora_entera, fill = Tipo_IP)) +
 
 Este gráfico, detallado en la Figura \@ref(fig:grafico-ip-barras), permite comparar el número de accesos según la IP de cada usuario.
 
-```{r grafico-ip-densidad, fig.cap="Densidad de accesos por Hora y Tipo de IP"}
+```{r grafico-ip-densidad, fig.cap="Densidad de accesos por Hora y Tipo de IP", fig.height=4}
 
 ggplot(clean_data, aes(x = Hora_entera, fill = Tipo_IP)) +
   geom_density(alpha = 0.65, linewidth = 0.75) + 
@@ -149,7 +160,7 @@ Al representar la densidad en lugar del Figura \@ref(fig:grafico-ip-barras), pod
 
 ### ¿Qué horas del día suelen tener el mayor número de accesos en el transcurso de una hora en el aula virtual?
 
-```{r grafico-pico-accesos, fig.cap="Volumen de accesos por hora"}
+```{r grafico-pico-accesos, fig.cap="Volumen de accesos por hora", fig.height=4}
 peak <- sort(table(clean_data$Hora_entera), decreasing = TRUE)
 k <- as.numeric(names(peak))
 
@@ -182,7 +193,7 @@ knitr::kable(pct_web,
              caption = "Distribución porcentual de accesos según origen del dispositivo")
 ```
 
-```{r grafico-web-hora, fig.cap="Promedio diario de accesos por hora según origen del dispositivo"}
+```{r grafico-web-hora, fig.cap="Promedio diario de accesos por hora según origen del dispositivo", fig.height=4}
 clean_data %>%
   group_by(Fecha, Hora_entera, Origen) %>%
   summarise(Accesos = n(), .groups = "drop") %>%
@@ -239,7 +250,7 @@ knitr::kable(promedio_tipo,
 
 Como podemos ver en la Tabla \@ref(tab:tabla-accesos-dias), es evidente que la media de accesos es mucho mayor en los días hábiles que en los días de reposo. Esto, mayoritariamente, se debe a que los días que hay clase se suele entrar más al aula virtual.
 
-```{r grafico-accesos-dias, fig.cap="Distribución y dispersión de los accesos diarios"}
+```{r grafico-accesos-dias, fig.cap="Distribución y dispersión de los accesos diarios", fig.height=4}
 ggplot(accesos_diarios, aes(x = Tipo_Dia, y = Accesos, fill = Tipo_Dia)) +
   geom_boxplot(alpha = 0.7) +
   labs(title = "Distribución de accesos diarios (Hábil vs Reposo)",
@@ -251,7 +262,7 @@ ggplot(accesos_diarios, aes(x = Tipo_Dia, y = Accesos, fill = Tipo_Dia)) +
 
 Sin embargo, el diagrama de cajas de la Figura \@ref(fig:grafico-accesos-dias) nos muestra un detalle interesante: hay varios puntos sueltos (outliers) en la columna de días de reposo. Esto puede significar que hay festivos concretos con muchísima actividad, siendo lo más probable el profesor modificando cosas o los alumnos estudiando justo antes de una entrega o examen.
 
-```{r grafico-horas-tipo, fig.cap="Promedio diario de accesos por hora según el tipo de día"}
+```{r grafico-horas-tipo, fig.cap="Promedio diario de accesos por hora según el tipo de día", fig.height=4}
 horas_tipo <- clean_data %>%
   group_by(Fecha, Hora_entera, Tipo_Dia) %>%
   summarise(Accesos = n(), .groups = "drop") %>%
@@ -272,7 +283,7 @@ Por último, la Figura \@ref(fig:grafico-horas-tipo) nos enseña a qué hora nos
 
 ### ¿Se observa un crecimiento o decrecimiento en el número de accesos mensuales a lo largo del año académico?
 
-```{r grafico-cosa, fig.cap="Evolución mensual de accesos"}
+```{r grafico-cosa, fig.cap="Evolución mensual de accesos", fig.height=4}
 accesos_mensuales <- clean_data %>%
   mutate(Mes = format(Fecha, "%Y-%m")) %>%
   group_by(Mes) %>%
@@ -296,7 +307,7 @@ Luego declina justo después de examenes pero no cae como a principio de curso, 
 
 ### ¿Cuál de los contextos de evento designados “tarea: …” tiene el mayor número de ingresos y cuál el menor?
 
-```{r grafico-naranja, fig.cap="Accesos por contexto de tarea"}
+```{r grafico-naranja, fig.cap="Accesos por contexto de tarea", fig.height=4}
 tareas <- clean_data %>%
   filter(grepl("tarea", Contexto_Evento, ignore.case = TRUE)) %>%
   count(Contexto_Evento, sort = TRUE) %>%
@@ -342,7 +353,7 @@ Con ayuda de la figura \@ref(fig:grafico-naranja), se puede ver con claridad el 
 
 Para poder verse de forma más clara, el grafico ha sido coloreado según 5 colores; rojo y azul, máximo y mínimo respectivamente, naranja aquellas tareas que estén por encima del percentil 66%, verde aquellas que estén por debajo del 33% y amarillas el resto.
 
-```{r, grafico-varita, fig.cap="Tarea más y menos accedida" ,fig.width=10, fig.height=5}
+```{r grafico-varita, fig.cap="Tarea más y menos accedida", fig.height=4, fig.width=10}
 ggplot(tareas_extremas, aes(x = reorder(Contexto_Evento, n), y = n, color = categoria)) +
   geom_point(size = 5) +
   geom_segment(aes(xend = Contexto_Evento, y = 0, yend = n)) +
@@ -386,7 +397,7 @@ knitr::kable(top_early_birds,
 
 Para encontrar a los verdaderos "early birds" (los más madrugadores), hemos filtrado los datos para quedarnos solo con los accesos entre las 4:00h y las 8:00h de la mañana. Como se puede ver en la Tabla \@ref(tab:tabla-early-birds), hemos sacado el top 3 de los usuarios que más veces han conseguido ser los primeros en abrir el aula virtual cada día. Estos son U0002 con la mayor cantidad de veces accedidas entre estas horas (incluso duplicando al siguiente), U0023 y U0017.
 
-```{r grafico-early-birds, fig.cap="Hábitos horarios de los 3 usuarios más madrugadores"}
+```{r grafico-early-birds, fig.cap="Hábitos horarios de los 3 usuarios más madrugadores", fig.height=4}
 habitos_early <- clean_data %>%
   filter(Nom_Usuario %in% top_early_birds$Nom_Usuario,
          Hora_entera >= 4 & Hora_entera <= 8)
@@ -405,7 +416,7 @@ Sin embargo, para entender bien cómo se comportan, hemos hecho el diagrama de c
 
 ### ¿Qué cinco usuarios anónimos compartirían el apodo de night owls por tener los accesos más tardíos en la noche?
 
-```{r grafico-night-owls, fig.cap="Distribución de accesos nocturnos de los cinco usuarios más tardíos"}
+```{r grafico-night-owls, fig.cap="Distribución de accesos nocturnos de los cinco usuarios más tardíos", fig.height=4}
 
 night_owls <- clean_data %>%
   filter(Hora_entera >= 22 | Hora_entera <= 3) %>%
@@ -491,7 +502,7 @@ Estas variables permitirían hacer análisis más completos sobre los hábitos d
 
 ### ¿Con la información de los datos obtenidos se puede identificar si hay algun momento de caida en los servidores?
 
-```{r grafico-caidas-servidor, fig.cap="(#fig:caidas-servidor) Distribución temporal de accesos diarios para la detección de posibles caídas"}
+```{r grafico-caidas-servidor, fig.cap="(#fig:caidas-servidor) Distribución temporal de accesos diarios para la detección de posibles caídas", fig.height=4}
 
 accesos_diarios <- clean_data %>%
   group_by(Fecha) %>%
@@ -500,7 +511,7 @@ accesos_diarios <- clean_data %>%
   )
 
 ggplot(accesos_diarios, aes(x = Fecha, y = Total_accesos)) +
-  geom_line(linewidth = 0.8, color = "steelblue") +
+  geom_line(linewidth = 0.8, color = "lightblue") +
   geom_point(size = 1.5, color = "darkblue") +
   labs(
     title = "Distribución diaria de accesos al aula virtual",
