@@ -320,12 +320,9 @@ ggplot(accesos_mensuales, aes(x = Mes, y = Accesos, group = 1)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+Como se muestra con claridad en la figura \@ref(fig:grafico-cosa), hay una clara relación entre el número de accesos y el mes del curso en el que se encuentre el curso escolar. Según marca la actividad, casi no hay accesos a Aula Virtual durante casi todo el primer cuatrimestre, elevandose mínimamente, solo durante el primer mes del curso. Pero se puede ver un gran ascenso en el número a partir del mes de diciembre, el mes anterior a las evaluaciones de primer cuatrimestre y específicamente el peak máximo de accesos es durante este mismo mes de pruebas.
 
-Para analizar la evolución temporal del uso del aula virtual, se ha agregado el número de accesos por mes a lo largo del año académico. Para ello, se ha transformado la variable de fecha original extrayendo el mes y el año de cada registro, lo que permite agrupar la actividad en intervalos temporales mensuales.
-
-A partir de esta agregación, se ha representado la evolución del número total de accesos mediante un gráfico de líneas, lo que facilita la identificación de tendencias a lo largo del tiempo.
-
-El análisis permite observar si existe un patrón de crecimiento en la actividad del aula virtual, así como posibles variaciones asociadas a periodos académicos concretos como inicio de curso, periodos de evaluación o vacaciones.
+Luego declina justo después de examenes pero no cae como a principio de curso, quedandose en un rate medio de aproximadamente 15 000 accesos por mes hasta que llega la siguiente convocatoria de examenes. Luego va en descenso hacia las recuperaciones y se queda en ceros al llegar agosto.
 
 ### ¿Cuál de los contextos de evento designados “tarea: …” tiene el mayor número de ingresos y cuál el menor?
 
@@ -353,10 +350,10 @@ ggplot(tareas, aes(x = reorder(Tarea_id, n), y = n, fill = categoria)) +
   geom_col() +
   coord_flip() +
   scale_fill_manual(values = c(
-    "Minimo" = "green3",
-    "Bajo" = "yellow",
-    "Medio" = "orange",
-    "Alto" = "darkorange",
+    "Minimo" = "blue",
+    "Bajo" = "green2",
+    "Medio" = "yellow2",
+    "Alto" = "orange",
     "Maximo" = "red"
   )) +
   labs(
@@ -371,13 +368,17 @@ tareas_extremas <- tareas %>%
   filter(n == max(n) | n == min(n))
 ```
 
+Con ayuda de la figura \@ref(fig:grafico-naranja), se puede ver con claridad el número de accesos por tarea del curso. En la figura aparecen discretizados los nombres de las tareas para que sea más ilustrativo el gráfico. Gracias a ello se puede interpretar fácilmente la diferéncia existente entre unas tareas y otras, y el hecho de que menos de la mitad de estas tareas prácticamente no tienen un sólo acceso.
+
+Para poder verse de forma más clara, el grafico ha sido coloreado según 5 colores; rojo y azul, máximo y mínimo respectivamente, naranja aquellas tareas que estén por encima del percentil 66%, verde aquellas que estén por debajo del 33% y amarillas el resto.
+
 ```{r, grafico-varita, fig.cap="Tarea más y menos accedida" ,fig.width=10, fig.height=5}
 ggplot(tareas_extremas, aes(x = reorder(Contexto_Evento, n), y = n, color = categoria)) +
   geom_point(size = 5) +
   geom_segment(aes(xend = Contexto_Evento, y = 0, yend = n)) +
   coord_flip() +
   scale_color_manual(values = c(
-    "Minimo" = "green3",
+    "Minimo" = "blue",
     "Maximo" = "red"
   )) +
   labs(
@@ -389,15 +390,9 @@ ggplot(tareas_extremas, aes(x = reorder(Contexto_Evento, n), y = n, color = cate
   theme(legend.position = "none")
 ```
 
-Para analizar qué contextos de tipo “tarea” generan mayor y menor interacción en el aula virtual, se ha filtrado el conjunto de datos original seleccionando únicamente aquellos registros cuyo contexto del evento contiene la palabra “tarea”.
+La figura \@ref(fig:grafico-varita), muestra la gran diferéncia entre la tarea de más acceso y aquellas con menor acceso. Otro punto a destacar de la figura, es que no existe sólo una tarea de mínimo acceso, sino que hay varias que comparten el puesto, todas ellas tienen un numero de accesos total de 2, frente a la del máximo acceso, que tiene por encima de los 2000. Aquí hemos dejado de discretizar los nombres para poder ver claramente ccuál es cuál.
 
-A partir de este subconjunto, se ha calculado el número total de accesos asociados a cada tarea, obteniendo una distribución de frecuencias que permite identificar las diferencias de uso entre actividades. Con el objetivo de facilitar la interpretación y mejorar la visualización, los nombres originales de las tareas han sido anonimizados mediante identificadores genéricos.
-
-Posteriormente, se han identificado la tarea con mayor número de accesos y la tarea con menor número de accesos, con el fin de analizar los extremos de comportamiento dentro de este tipo de eventos. Este enfoque permite simplificar la comparación y centrar el análisis en los casos más representativos de alta y baja interacción.
-
-La representación gráfica resultante, presentada en formato horizontal para mejorar la legibilidad de los nombres largos, permite comparar de forma directa ambos extremos, destacando de manera clara la diferencia en el nivel de uso entre la tarea más y la menos accedida.
-
-En conjunto, este análisis permite identificar de forma rápida qué actividades del aula virtual concentran mayor participación del alumnado y cuáles presentan una menor interacción, facilitando la interpretación global del comportamiento en este tipo de eventos.
+Por lo tanto, nos da a conocer que la tarea con mayor número de accesos es El Examen de TD de Lab de la 1ra convocatoria 2025. y las de menor acceso: El marathon de Tidyverse, Los dos examenes de laboratorio de la convocatoria de 2023, el ejercicio del tema 5 sobre exploración de un datasety la Tarea de clase de la sessión dos.
 
 ### ¿Basándonos en las horas más tempranas de ingreso al aula virtual, qué tres usuarios anónimos suelen ser los primeros en ver AV por las mañanas (early birds)?
 
